@@ -1,14 +1,14 @@
 {
   "date": "2026-02-28",
-  "generated_at": "2026-02-28 17:39:41 CST",
-  "total": 25,
+  "generated_at": "2026-02-28 19:51:58 CST",
+  "total": 34,
   "categories": {
     "international": [
       {
         "title": "We Will Not Be Divided",
         "url": "https://notdivided.org",
         "source": "Hacker News",
-        "score": 1619,
+        "score": 1809,
         "time": "08:54",
         "category": "international",
         "desc": ""
@@ -17,17 +17,8 @@
         "title": "Statement on the comments from Secretary of War Pete Hegseth",
         "url": "https://www.anthropic.com/news/statement-comments-secretary-war",
         "source": "Hacker News",
-        "score": 917,
+        "score": 973,
         "time": "09:20",
-        "category": "international",
-        "desc": ""
-      },
-      {
-        "title": "How do I cancel my ChatGPT subscription?",
-        "url": "https://help.openai.com/en/articles/7232927-how-do-i-cancel-my-chatgpt-subscription",
-        "source": "Hacker News",
-        "score": 826,
-        "time": "13:55",
         "category": "international",
         "desc": ""
       },
@@ -35,7 +26,7 @@
         "title": "OpenAI agrees with Dept. of War to deploy models in their classified network",
         "url": "https://twitter.com/sama/status/2027578652477821175",
         "source": "Hacker News",
-        "score": 642,
+        "score": 784,
         "time": "10:59",
         "category": "international",
         "desc": ""
@@ -44,7 +35,7 @@
         "title": "A new California law says all operating systems need to have age verification",
         "url": "https://www.pcgamer.com/software/operating-systems/a-new-california-law-says-all-operating-systems-including-linux-need-to-have-some-form-of-age-verification-at-account-setup/",
         "source": "Hacker News",
-        "score": 577,
+        "score": 604,
         "time": "22:55",
         "category": "international",
         "desc": ""
@@ -53,7 +44,7 @@
         "title": "OpenAI raises $110B on $730B pre-money valuation",
         "url": "https://techcrunch.com/2026/02/27/openai-raises-110b-in-one-of-the-largest-private-funding-rounds-in-history/",
         "source": "Hacker News",
-        "score": 485,
+        "score": 499,
         "time": "22:56",
         "category": "international",
         "desc": ""
@@ -62,17 +53,8 @@
         "title": "A better streams API is possible for JavaScript",
         "url": "https://blog.cloudflare.com/a-better-web-streams-api/",
         "source": "Hacker News",
-        "score": 406,
+        "score": 414,
         "time": "22:02",
-        "category": "international",
-        "desc": ""
-      },
-      {
-        "title": "NASA announces overhaul of Artemis program amid safety concerns, delays",
-        "url": "https://www.cbsnews.com/news/nasa-artemis-moon-program-overhaul/",
-        "source": "Hacker News",
-        "score": 255,
-        "time": "00:33",
         "category": "international",
         "desc": ""
       },
@@ -80,8 +62,17 @@
         "title": "Croatia declared free of landmines after 31 years",
         "url": "https://glashrvatske.hrt.hr/en/domestic/croatia-declared-free-of-landmines-after-31-years-12593533",
         "source": "Hacker News",
-        "score": 252,
+        "score": 329,
         "time": "10:48",
+        "category": "international",
+        "desc": ""
+      },
+      {
+        "title": "NASA announces overhaul of Artemis program amid safety concerns, delays",
+        "url": "https://www.cbsnews.com/news/nasa-artemis-moon-program-overhaul/",
+        "source": "Hacker News",
+        "score": 260,
+        "time": "00:33",
         "category": "international",
         "desc": ""
       },
@@ -89,8 +80,26 @@
         "title": "A Chinese official’s use of ChatGPT revealed an intimidation operation",
         "url": "https://www.cnn.com/2026/02/25/politics/chatgpt-china-intimidation-operation",
         "source": "Hacker News",
-        "score": 205,
+        "score": 213,
         "time": "23:52",
+        "category": "international",
+        "desc": ""
+      },
+      {
+        "title": "US and Israel launch strikes on Iran, as Trump says ‘massive’ campaign underway",
+        "url": "https://www.cnn.com/2026/02/28/middleeast/israel-attack-iran-intl-hnk",
+        "source": "Hacker News",
+        "score": 205,
+        "time": "14:34",
+        "category": "international",
+        "desc": ""
+      },
+      {
+        "title": "Open source calculator firmware DB48X forbids CA/CO use due to age verification",
+        "url": "https://github.com/c3d/db48x/commit/7819972b641ac808d46c54d3f5d1df70d706d286",
+        "source": "Hacker News",
+        "score": 188,
+        "time": "23:37",
         "category": "international",
         "desc": ""
       },
@@ -98,35 +107,17 @@
         "title": "Smallest transformer that can add two 10-digit numbers",
         "url": "https://github.com/anadim/AdderBoard",
         "source": "Hacker News",
-        "score": 151,
+        "score": 170,
         "time": "02:29",
         "category": "international",
         "desc": ""
       },
       {
-        "title": "Don't use passkeys for encrypting user data",
-        "url": "https://blog.timcappalli.me/p/passkeys-prf-warning/",
+        "title": "OpenAI – How to delete your account",
+        "url": "https://help.openai.com/en/articles/6378407-how-to-delete-your-account",
         "source": "Hacker News",
-        "score": 149,
-        "time": "11:11",
-        "category": "international",
-        "desc": ""
-      },
-      {
-        "title": "Show HN: I ported Manim to TypeScript (run 3b1B math animations in the browser)",
-        "url": "https://github.com/maloyan/manim-web",
-        "source": "Hacker News",
-        "score": 103,
-        "time": "02:15",
-        "category": "international",
-        "desc": ""
-      },
-      {
-        "title": "Rust Is Just a Tool",
-        "url": "https://lewiscampbell.tech/blog/260204.html",
-        "source": "Hacker News",
-        "score": 85,
-        "time": "13:47",
+        "score": 143,
+        "time": "18:41",
         "category": "international",
         "desc": ""
       },
@@ -134,105 +125,194 @@
         "title": "Qt45: A small polymerase ribozyme that can synthesize itself",
         "url": "https://www.science.org/doi/10.1126/science.adt2760",
         "source": "Hacker News",
-        "score": 83,
+        "score": 87,
         "time": "07:42",
         "category": "international",
         "desc": ""
+      },
+      {
+        "title": "Cash issuing terminals",
+        "url": "https://computer.rip/2026-02-27-ibm-atm.html",
+        "source": "Hacker News",
+        "score": 66,
+        "time": "13:21",
+        "category": "international",
+        "desc": ""
+      },
+      {
+        "title": "moeru-ai / airi",
+        "url": "https://github.com/moeru-ai/airi",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "💖🧸 Self hosted, you-owned Grok Companion, a container of souls of waifu, cyber livings to bring them"
+      },
+      {
+        "title": "anthropics / claude-code",
+        "url": "https://github.com/anthropics/claude-code",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and he"
+      },
+      {
+        "title": "tukaani-project / xz",
+        "url": "https://github.com/tukaani-project/xz",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "XZ Utils"
+      },
+      {
+        "title": "Shubhamsaboo / awesome-llm-apps",
+        "url": "https://github.com/Shubhamsaboo/awesome-llm-apps",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "Collection of awesome LLM apps with AI Agents and RAG using OpenAI, Anthropic, Gemini and opensource"
+      },
+      {
+        "title": "ruvnet / ruflo",
+        "url": "https://github.com/ruvnet/ruflo",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "🌊 The leading agent orchestration platform for Claude. Deploy intelligent multi-agent swarms, coordi"
+      },
+      {
+        "title": "bytedance / deer-flow",
+        "url": "https://github.com/bytedance/deer-flow",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "An open-source SuperAgent harness that researches, codes, and creates. With the help of sandboxes, m"
+      },
+      {
+        "title": "Wei-Shaw / claude-relay-service",
+        "url": "https://github.com/Wei-Shaw/claude-relay-service",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "CRS-自建Claude Code镜像，一站式开源中转服务，让 Claude、OpenAI、Gemini、Droid 订阅统一接入，支持拼车共享，更高效分摊成本，原生工具无缝使用。"
+      },
+      {
+        "title": "NousResearch / hermes-agent",
+        "url": "https://github.com/NousResearch/hermes-agent",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "IDE for the AI Agents Era - Run an army of Claude Code, Codex, etc. on your machine"
+      },
+      {
+        "title": "superset-sh / superset",
+        "url": "https://github.com/superset-sh/superset",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "Fast and accurate automatic speech recognition (ASR) for edge devices"
+      },
+      {
+        "title": "moonshine-ai / moonshine",
+        "url": "https://github.com/moonshine-ai/moonshine",
+        "source": "GitHub Trending",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "international",
+        "desc": "PArallel Distributed Deep LEarning: Machine Learning Framework from Industrial Practice （『飞桨』核心框架，深度"
       }
     ],
     "domestic": [
       {
-        "title": "还在用 WebSocket 做实时通信？SSE 可能更简单",
-        "url": "https://juejin.cn/post/7576559408659611700",
+        "title": "我为什么说全栈正在杀死前端？",
+        "url": "https://juejin.cn/post/7573172586839834676",
         "source": "掘金",
-        "score": 18,
+        "score": 332,
         "time": "2026-02-28",
         "category": "domestic",
-        "desc": "除了WebSocket，你还知道SSE吗？同为实时通信技术，SSE实现简单且支持自动重连，在特定场景下是更优解。本文将对比两者的核心差异，助你做出最佳技术选型。"
+        "desc": "大家好，我又来了🤣。 打开2025年的招聘软件，十个资深前端岗位，有八个在JD（职位描述）里写着：“有Node.js/Serverless/全栈经验者优先”。 "
       },
       {
-        "title": "数据标注平台重磅上线 | 标注赚现金 低门槛真收益",
-        "url": "https://juejin.cn/post/7581807793134108718",
+        "title": "vue文件自动生成路由会成为主流",
+        "url": "https://juejin.cn/post/7610253888646119467",
         "source": "掘金",
-        "score": 20,
+        "score": 23,
         "time": "2026-02-28",
         "category": "domestic",
-        "desc": "一个多领域的数据采集与标注服务平台，为你而来！低门槛、真收益！利用碎片时间，将你的代码洞察力直接变现。这不仅仅是一个任务平台，更是一个专为资深开发者打造的、用技"
+        "desc": "vue-router悄悄发布了5.0版本，用官方的话说，V5 是一个过渡版本，它将unplugin-vue-router（基于文件的路由）合并到了核心包中，就是"
       },
       {
-        "title": "别用 JS 惯坏了鸿蒙",
-        "url": "https://juejin.cn/post/7599924721006182463",
-        "source": "掘金",
-        "score": 20,
-        "time": "2026-02-28",
-        "category": "domestic",
-        "desc": "HarmonyOS NEXT推出也快2年了，本质上是强制前端开发者从“UI 涂料工”向“跨端架构师”转型。虽然适配的过程充满了各种“技术坑”，但这正是我们消除技"
-      },
-      {
-        "title": "使用Electron+Vue3开发Qwen3 2B桌面应用：从想法到实现的完整指南",
-        "url": "https://juejin.cn/post/7581413562486587398",
-        "source": "掘金",
-        "score": 3,
-        "time": "2026-02-28",
-        "category": "domestic",
-        "desc": "一、引言 随着大语言模型的快速发展，本地部署和使用LLM已经成为开发者和企业的重要需求。Qwen3 2B作为一款轻量级的大语言模型，具有良好的性能和兼容性，非常"
-      },
-      {
-        "title": "Flutter 邪修秘籍：那些官方文档不会告诉你的骚操作",
-        "url": "https://juejin.cn/post/7592683699771473930",
-        "source": "掘金",
-        "score": 31,
-        "time": "2026-02-28",
-        "category": "domestic",
-        "desc": "前言：为什么需要\"邪修\"？ Flutter 官方文档写得很好，教你如何写出优雅、规范、可维护的代码。 但现实是： 产品经理的需求永远超出框架的设计 设计师的脑洞"
-      },
-      {
-        "title": "微信朋友圈图片布局",
-        "url": "https://juejin.cn/post/7590712589297106950",
-        "source": "掘金",
-        "score": 4,
-        "time": "2026-02-28",
-        "category": "domestic",
-        "desc": "参考微信朋友圈图片展示形式。实现一张图片时，按图片原有宽高显示。 两张图片，并行展示，图片会偏大一些。 四张图片时，一行显示两个。 三张、及四张以上时，一行显示"
-      },
-      {
-        "title": "我只改了个头像，为什么整个后台系统都闪了一下？",
-        "url": "https://juejin.cn/post/7578138892126797870",
-        "source": "掘金",
-        "score": 24,
-        "time": "2026-02-28",
-        "category": "domestic",
-        "desc": "前言：一个悲伤的故事 那是上个周五的下午，阳光明媚，空气中弥漫着“即将放假”的快乐气息。 产品经理（PM）跑过来跟前端说：“哎，咱们那个后台管理系统，右上角的头"
-      },
-      {
-        "title": "用了都说好的 uniapp 路由框架",
-        "url": "https://juejin.cn/post/7594262760939749410",
-        "source": "掘金",
-        "score": 4,
-        "time": "2026-02-28",
-        "category": "domestic",
-        "desc": "背景 在使用 uni-app 开发项目时，路由跳转是极为频繁的操作，uni-app 提供的路由跳转 api uni.navigateTo够用但是却不够好用，主要"
-      },
-      {
-        "title": "不限于Vue！vue-plugin-hiprint 打印插件完整使用指南",
-        "url": "https://juejin.cn/post/7574382925760725030",
-        "source": "掘金",
-        "score": 4,
-        "time": "2026-02-28",
-        "category": "domestic",
-        "desc": "本教程整理了自己的使用过程经验和接触到的教程文档，旨在为初次接触到vue-plugin-hiprint开发的人，提供初步的了解和自定义开发的方向"
-      },
-      {
-        "title": "前端面试复习指南【代码演示多多版】之——HTML",
-        "url": "https://juejin.cn/post/7611354028865765391",
+        "title": "Everything Claude Code 速查指南",
+        "url": "https://juejin.cn/post/7611165150922752050",
         "source": "掘金",
         "score": 1,
         "time": "2026-02-28",
         "category": "domestic",
-        "desc": "本文章介绍了2026年HTML主要面试内容，包括<dialog>、<picture>、<template>等标签的使用。文章详细讲解了这些新特性如何改善网页的响"
+        "desc": "这是黑客松冠军日常使用 10 个月后的完整配置：技能（skills）、钩子（hooks）、子代理（subagents）、MCP、插件（plugins），以及真正"
+      },
+      {
+        "title": "前端组件库开发实践：从零到发布",
+        "url": "https://juejin.cn/post/7611232470153199656",
+        "source": "掘金",
+        "score": 5,
+        "time": "2026-02-28",
+        "category": "domestic",
+        "desc": "为什么要搞自己的组件库？ 先说说一些开发的名场面，看看你有没有中招： 新开一个项目，复制粘贴上个项目的 components 文件夹，改改名字接着用； 三个项目"
+      },
+      {
+        "title": "Git提交信息太乱？AI一键美化！一行命令拯救你的项目历史🚀",
+        "url": "https://juejin.cn/post/7581428845683179563",
+        "source": "掘金",
+        "score": 3,
+        "time": "2026-02-28",
+        "category": "domestic",
+        "desc": "git-rewrite-commits 用 AI 自动重写杂乱的 Git 提交信息。支持 Ollama 本地或云端模型，只需一行命令，即可规范化整个提交历史，再"
+      },
+      {
+        "title": "tanstack query的基本使用",
+        "url": "https://juejin.cn/post/7611354028867076111",
+        "source": "掘金",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "domestic",
+        "desc": "一.为什么要使用tanstack query？ 显式的来看：主要是可以简化代码，可以看下面的一个例子，这是一个我们经常用的发送请求的一个过程，包括了请求数据，加"
+      },
+      {
+        "title": "拒绝 rem 计算！Vue3 大屏适配，我是这样做的 (vfit 使用体验)",
+        "url": "https://juejin.cn/post/7579427549472014382",
+        "source": "掘金",
+        "score": 73,
+        "time": "2026-02-28",
+        "category": "domestic",
+        "desc": "最近公司又接了个数据可视化大屏的需求，设计稿是标准的 1920 x 1080。 拿到设计稿的那一刻，我的内心是拒绝的... 🤯 大家都知道，做大屏适配最烦的就是"
+      },
+      {
+        "title": "HTML5 自定义属性 data-*：别再把数据塞进 class 里了！",
+        "url": "https://juejin.cn/post/7575119254314401818",
+        "source": "掘金",
+        "score": 45,
+        "time": "2026-02-28",
+        "category": "domestic",
+        "desc": "还在用 `<div class=\"user-card id-123 status-active\">` 这种“歪门邪道”存数据吗？是时候让 HTML5 的 自定义"
+      },
+      {
+        "title": "[前端特效] 左滑显示按钮的实现介绍",
+        "url": "https://juejin.cn/post/7611753894969638921",
+        "source": "掘金",
+        "score": 0,
+        "time": "2026-02-28",
+        "category": "domestic",
+        "desc": "最近在开发「Todo-List」应用，今天想介绍下一个前端特效 - 左滑显示按钮组的实现。 精简后的代码已提交至Github-Gist：slide-item-d"
       }
     ],
     "trending": []
-  },
-  "stocks": []
+  }
 }
