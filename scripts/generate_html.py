@@ -216,6 +216,11 @@ a{{color:inherit;text-decoration:none}}
 .trend-rank-box{{background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:1rem;position:sticky;top:60px}}
 .trend-rank-title{{font-size:.82rem;font-weight:700;color:var(--mu);margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--bd2)}}
 .trend-cards-box{{min-width:0}}
+.trend-cat-tabs{{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}}
+.trend-cat-tab{{font-size:.78rem;padding:.3rem .85rem;border-radius:20px;border:1px solid var(--bd);color:var(--mu);cursor:pointer;transition:all .15s;user-select:none}}
+.trend-cat-tab:hover{{border-color:var(--ac);color:var(--ac)}}
+.trend-cat-tab.active{{background:var(--ac);border-color:var(--ac);color:#000;font-weight:600}}
+.trend-cat-empty{{color:var(--mu);font-size:.82rem;padding:2rem;text-align:center}}
 .rank-list{{display:flex;flex-direction:column;gap:.2rem}}
 .rank-item{{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .4rem;border-radius:6px;text-decoration:none;color:inherit;transition:background .15s}}
 .rank-item:hover{{background:var(--hv2)}}
@@ -582,30 +587,34 @@ def _panel_trend(cards_html, trend_items=None):
         for i, item in enumerate(trend_items[:10]):
             title = esc(item.get("title",""))
             url   = esc(item.get("url","#"))
-            desc  = esc(item.get("desc",""))[:60]
             score = item.get("score", 0)
             rank_cls = f"r{i+1}" if i < 3 else ""
             score_html = f'<span class="rank-score">{int(score):,}</span>' if score else ""
-            desc_html  = f'<div class="rank-desc">{desc}</div>' if desc else ""
             rank_html += (
                 f'<a class="rank-item" href="{url}" target="_blank" rel="noopener">'
                 f'<span class="rank-num {rank_cls}">{i+1}</span>'
                 f'<div class="rank-content">'
                 f'<div class="rank-title">{title}{score_html}</div>'
-                f'{desc_html}'
                 f'</div></a>'
             )
     return f"""
 <div id="trend" class="panel">
-  <div class="section-title">&#128293; 实时热点</div>
   <div class="trend-layout">
     <div class="trend-rank-box">
-      <div class="trend-rank-title">&#127942; 热搜排行榜 TOP10</div>
+      <div class="trend-rank-title">&#127942; 热搜 TOP10</div>
       <div class="rank-list">{rank_html or '<div class="empty">暂无数据</div>'}</div>
     </div>
     <div class="trend-cards-box">
-      <div class="trend-rank-title">&#128240; 全部热点</div>
-      <div class="cards">{cards_html}</div>
+      <div class="trend-cat-tabs" id="trend-cat-tabs">
+        <span class="trend-cat-tab active" data-cat="all" onclick="switchTrendCat(this)">&#128293; 全部</span>
+        <span class="trend-cat-tab" data-cat="intl" onclick="switchTrendCat(this)">&#127758; 国际</span>
+        <span class="trend-cat-tab" data-cat="tech" onclick="switchTrendCat(this)">&#129302; 科技</span>
+        <span class="trend-cat-tab" data-cat="finance" onclick="switchTrendCat(this)">&#128200; 财经</span>
+        <span class="trend-cat-tab" data-cat="ent" onclick="switchTrendCat(this)">&#127916; 娱乐</span>
+        <span class="trend-cat-tab" data-cat="sports" onclick="switchTrendCat(this)">&#9917; 体育</span>
+        <span class="trend-cat-tab" data-cat="social" onclick="switchTrendCat(this)">&#128101; 社会</span>
+      </div>
+      <div id="trend-cat-content"><div class="cards">{cards_html}</div></div>
     </div>
   </div>
 </div>"""
@@ -841,6 +850,7 @@ function switchTab(id, el) {{
   if (id === 'overview') loadOverviewMarket();
   if (id === 'ai')       loadAI();
   if (id === 'focus')    initFocus();
+  if (id === 'trend')    initTrendCat();
   if (id === 'intl')     translateCards();
 }}
 function switchTabByName(id) {{
@@ -971,6 +981,60 @@ async function loadOvAIPreview() {{
 }}
 
 // ── 动态专栏 ──
+// ── 热点分类 ──
+const TREND_CATS = {{
+  intl:    ['伊朗','以色列','中东','美军','俄罗斯','乌克兰','美国','英国','法国','德国','日本','韩国','朝鲜','台湾','联合国','安理会','北约','欧盟','拜登','特朗普','普京','泽连斯基','内塔尼亚胡','哈马斯','导弹','战争','制裁','外交','峰会'],
+  tech:    ['小米','华为','苹果','谷歌','微软','特斯拉','AI','人工智能','大模型','芯片','手机','发布会','科技','互联网','字节','腾讯','阿里','百度','滴滴','比亚迪','新能源','电动车','机器人','卫星','火箭','航天'],
+  finance: ['股市','A股','港股','美股','基金','黄金','金价','油价','人民币','美元','汇率','通胀','GDP','经济','银行','房价','楼市','五粮液','茅台','白酒','上市','IPO','财报','降息','加息'],
+  ent:     ['肖战','王一博','鹿晗','杨幂','赵丽颖','迪丽热巴','易烊千玺','蔡徐坤','明星','演员','歌手','综艺','电影','电视剧','票房','出轨','离婚','恋爱','结婚','顺产','怀孕','塌房','爆料','娱乐','椰树','广告'],
+  sports:  ['国乒','乒乓球','足球','篮球','CBA','NBA','世界杯','奥运','亚运','冠军','决赛','半决赛','晋级','王楚钦','马龙','孙颖莎','梅西','C罗','体育','赛事','金牌'],
+  social:  ['地震','洪水','火灾','事故','案件','被查','反腐','政策','法规','标准','民生','教育','医疗','养老','就业','工资','物价','超市','山姆','降价'],
+}};
+
+let trendInited = false;
+function initTrendCat() {{
+  if (trendInited) return;
+  trendInited = true;
+  // 给每张卡片打分类标签
+  const cards = Array.from(document.querySelectorAll('#trend-cat-content .card'));
+  cards.forEach(card => {{
+    const text = card.textContent || '';
+    let matched = 'other';
+    for (const [cat, kws] of Object.entries(TREND_CATS)) {{
+      if (kws.some(kw => text.includes(kw))) {{ matched = cat; break; }}
+    }}
+    card.dataset.cat = matched;
+  }});
+}}
+
+function switchTrendCat(el) {{
+  document.querySelectorAll('.trend-cat-tab').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  initTrendCat();
+  const cat = el.dataset.cat;
+  const cards = document.querySelectorAll('#trend-cat-content .card');
+  let shown = 0;
+  cards.forEach(c => {{
+    const show = cat === 'all' || c.dataset.cat === cat;
+    c.style.display = show ? '' : 'none';
+    if (show) shown++;
+  }});
+  // 无结果提示
+  let empty = document.getElementById('trend-cat-empty');
+  if (!shown) {{
+    if (!empty) {{
+      empty = document.createElement('div');
+      empty.id = 'trend-cat-empty';
+      empty.className = 'trend-cat-empty';
+      document.getElementById('trend-cat-content').appendChild(empty);
+    }}
+    empty.textContent = '该分类暂无相关热点';
+    empty.style.display = '';
+  }} else if (empty) {{
+    empty.style.display = 'none';
+  }}
+}}
+
 // ── 自定义话题 ──
 function loadCustomTopics() {{
   const saved = JSON.parse(localStorage.getItem('customFocusTopics') || '[]');
