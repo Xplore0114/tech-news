@@ -35,68 +35,28 @@ def render_cards(items):
         )
     return out
 
-def render_stocks(stock_data):
-    stocks   = stock_data.get("stocks", [])
-    updated  = stock_data.get("updated_at", "")
-    if not stocks:
-        return '<div class="empty">股价数据暂未生成，等待 Action 运行...</div>'
-    us = [s for s in stocks if s.get("region") == "us"]
-    cn = [s for s in stocks if s.get("region") == "cn"]
-
-    def card(s):
-        err = s.get("error")
-        if err or not s.get("price"):
-            return (f'<div class="sc flat"><div class="sn">{s["name"]}</div>'
-                    f'<div class="ss">{s["symbol"]}</div>'
-                    f'<div class="sload">暂无数据</div></div>')
-        chg = s["change"]
-        pct = s["change_pct"]
-        cls = "up" if chg > 0 else ("down" if chg < 0 else "flat")
-        arrow = "&#9650;" if chg >= 0 else "&#9660;"
-        sign  = "+" if chg >= 0 else ""
-        cur   = s.get("currency", "USD")
-        return (
-            f'<div class="sc {cls}">'
-            f'<div class="sn">{s["name"]}</div>'
-            f'<div class="ss">{s["symbol"]}</div>'
-            f'<div class="sp">{cur} {s["price"]:,.2f}</div>'
-            f'<div class="sd {cls}">{arrow} {sign}{chg:.2f} ({sign}{pct:.2f}%)</div>'
-            f'<div class="st">{s.get("updated","")}</div>'
-            f'</div>'
-        )
-
-    html  = f'<p class="sup">数据更新于 {updated} &nbsp;·&nbsp; 每2小时自动刷新</p>'
-    html += '<h3 class="sg-title">&#127482;&#127480; 美股</h3>'
-    html += '<div class="sg">' + "".join(card(s) for s in us) + "</div>"
-    html += '<h3 class="sg-title">&#127464;&#127475; 中概 / 港股</h3>'
-    html += '<div class="sg">' + "".join(card(s) for s in cn) + "</div>"
-    return html
-
 def main():
-    news       = load_json("news.json", {})
-    history    = load_json("history.json", [])
-    stock_data = load_json("stocks.json", {})
+    news    = load_json("news.json", {})
+    history = load_json("history.json", [])
 
     date = news.get("date", "")
     gen  = news.get("generated_at", "")
     cats = news.get("categories", {})
 
-    intl_html   = render_cards(cats.get("international", []))
-    dom_html    = render_cards(cats.get("domestic", []))
-    trend_html  = render_cards(cats.get("trending", []))
-    stock_html  = render_stocks(stock_data)
-
+    intl_html  = render_cards(cats.get("international", []))
+    dom_html   = render_cards(cats.get("domestic", []))
+    trend_html = render_cards(cats.get("trending", []))
     history_json = json.dumps(history, ensure_ascii=False)
 
     os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write(_html_head(date, gen))
-        f.write(_html_body(intl_html, dom_html, trend_html, stock_html))
-        f.write(_html_script(history_json))
+        f.write(_head(date, gen))
+        f.write(_body(intl_html, dom_html, trend_html))
+        f.write(_script(history_json))
     print(f"[INFO] HTML generated -> {OUTPUT_FILE}")
 
 
-def _html_head(date, gen):
+def _head(date, gen):
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -132,8 +92,8 @@ header h1{{font-size:1.9rem;font-weight:800;background:linear-gradient(90deg,var
 .sn{{font-size:.92rem;font-weight:700}}.ss{{font-size:.7rem;color:var(--mu)}}
 .sp{{font-size:1.05rem;font-weight:800;margin-top:.2rem}}
 .sd.up{{color:var(--gn);font-size:.82rem;font-weight:600}}.sd.down{{color:var(--rd);font-size:.82rem;font-weight:600}}.sd.flat{{color:var(--mu);font-size:.82rem}}
-.st{{font-size:.68rem;color:var(--mu);margin-top:.15rem}}
-.sload{{color:var(--mu);font-size:.82rem;padding:.3rem 0}}
+.skel{{background:linear-gradient(90deg,var(--sf) 25%,var(--hv) 50%,var(--sf) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:10px;height:90px;border:1px solid var(--bd)}}
+@keyframes shimmer{{0%{{background-position:200% 0}}100%{{background-position:-200% 0}}}}
 .hg{{display:flex;flex-direction:column;gap:.6rem;max-width:640px}}
 .hi{{display:flex;justify-content:space-between;align-items:center;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:.75rem 1rem;cursor:pointer;transition:background .15s,border-color .15s}}
 .hi:hover{{background:var(--hv);border-color:var(--ac)}}
@@ -163,51 +123,132 @@ footer{{text-align:center;padding:2rem;color:var(--mu);font-size:.78rem;border-t
 </div>"""
 
 
-def _html_body(intl_html, dom_html, trend_html, stock_html):
+def _body(intl_html, dom_html, trend_html):
     return f"""
 <div id="intl"  class="panel active"><div class="cards">{intl_html}</div></div>
 <div id="dom"   class="panel"><div class="cards">{dom_html}</div></div>
 <div id="trend" class="panel"><div class="cards">{trend_html}</div></div>
-<div id="stock" class="panel">{stock_html}</div>
-<div id="hist"  class="panel"><div class="hg" id="hist-list"></div></div>
+<div id="stock" class="panel">
+  <p class="sup" id="stock-ts">正在加载行情数据...</p>
+  <h3 class="sg-title">&#127482;&#127480; 美股</h3>
+  <div class="sg" id="grid-us"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  <h3 class="sg-title">&#127464;&#127475; 中概 / 港股</h3>
+  <div class="sg" id="grid-cn"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  <h3 class="sg-title">&#129351; 贵金属</h3>
+  <div class="sg" id="grid-metal"><div class="skel"></div><div class="skel"></div></div>
+  <p style="color:var(--mu);font-size:.75rem;margin-top:1rem">
+    数据来源：Yahoo Finance &nbsp;&middot;&nbsp; 延迟约15分钟 &nbsp;&middot;&nbsp;
+    <a href="#" onclick="loadMarket(true);return false" style="color:var(--ac)">&#8635; 刷新</a>
+  </p>
+</div>
+<div id="hist" class="panel"><div class="hg" id="hist-list"></div></div>
 <div class="ov" id="modal">
   <div class="mo">
-    <div class="mh">
-      <h2 id="modal-title">历史日报</h2>
-      <button class="mc" onclick="closeModal()">&#10005;</button>
-    </div>
+    <div class="mh"><h2 id="modal-title">历史日报</h2><button class="mc" onclick="closeModal()">&#10005;</button></div>
     <div id="modal-body"></div>
   </div>
 </div>
-<footer>数据来源：Hacker News &middot; GitHub Trending &middot; V2EX &middot; 掘金 &middot; 微博 &middot; 知乎 &middot; Yahoo Finance &nbsp;|&nbsp; 新闻每日08:00 &middot; 股价每2小时更新</footer>"""
+<footer>数据来源：Hacker News &middot; GitHub Trending &middot; 掘金 &middot; Yahoo Finance &nbsp;|&nbsp; 新闻每日08:00更新 &middot; 行情实时拉取</footer>"""
 
 
-def _html_script(history_json):
+def _script(history_json):
     return f"""
 <script>
 const HISTORY = {history_json};
+const MARKET = {{
+  us: [
+    {{s:"AAPL",n:"苹果"}},{{s:"MSFT",n:"微软"}},{{s:"GOOGL",n:"谷歌"}},{{s:"AMZN",n:"亚马逊"}},
+    {{s:"META",n:"Meta"}},{{s:"NVDA",n:"英伟达"}},{{s:"TSLA",n:"特斯拉"}},{{s:"NFLX",n:"Netflix"}},
+  ],
+  cn: [
+    {{s:"9988.HK",n:"阿里巴巴"}},{{s:"0700.HK",n:"腾讯"}},{{s:"9618.HK",n:"京东"}},
+    {{s:"BIDU",n:"百度"}},{{s:"PDD",n:"拼多多"}},{{s:"BABA",n:"阿里(美)"}},
+  ],
+  metal: [
+    {{s:"GC=F",n:"黄金",unit:"oz"}},
+    {{s:"SI=F",n:"白银",unit:"oz"}},
+  ],
+}};
 
 function switchTab(id, el) {{
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   el.classList.add('active');
-  if (id === 'hist') renderHistList();
+  if (id === 'stock') loadMarket(false);
+  if (id === 'hist')  renderHistList();
 }}
+
+/* ── 行情实时拉取（CORS代理 fallback） ── */
+let marketLoaded = false;
+async function loadMarket(force) {{
+  if (marketLoaded && !force) return;
+  const all = [...MARKET.us, ...MARKET.cn, ...MARKET.metal];
+  const results = await Promise.allSettled(all.map(item => fetchQuote(item.s)));
+  const map = {{}};
+  all.forEach((item, i) => {{ map[item.s] = results[i].status === 'fulfilled' ? results[i].value : null; }});
+  document.getElementById('grid-us').innerHTML    = MARKET.us.map(x    => stockCard(x, map[x.s])).join('');
+  document.getElementById('grid-cn').innerHTML    = MARKET.cn.map(x    => stockCard(x, map[x.s])).join('');
+  document.getElementById('grid-metal').innerHTML = MARKET.metal.map(x => metalCard(x, map[x.s])).join('');
+  const now = new Date().toLocaleTimeString('zh-CN', {{hour:'2-digit',minute:'2-digit'}});
+  document.getElementById('stock-ts').textContent = '行情更新于 ' + now + '（延迟约15分钟）';
+  marketLoaded = true;
+  // 5分钟后自动静默刷新
+  setTimeout(() => {{
+    marketLoaded = false;
+    if (document.getElementById('stock').classList.contains('active')) loadMarket(false);
+  }}, 5 * 60 * 1000);
+}}
+
+async function fetchQuote(symbol) {{
+  const yUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(symbol) + '?interval=1d&range=2d';
+  const urls = [
+    'https://corsproxy.io/?url=' + encodeURIComponent(yUrl),
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(yUrl),
+    yUrl,
+  ];
+  for (const url of urls) {{
+    try {{
+      const ctrl = new AbortController();
+      const tid  = setTimeout(() => ctrl.abort(), 8000);
+      const r    = await fetch(url, {{signal: ctrl.signal}});
+      clearTimeout(tid);
+      if (!r.ok) continue;
+      const d    = await r.json();
+      const meta = d.chart.result[0].meta;
+      const price = meta.regularMarketPrice || 0;
+      const prev  = meta.chartPreviousClose || meta.previousClose || price;
+      const chg   = price - prev;
+      const pct   = prev ? chg / prev * 100 : 0;
+      return {{ price, chg, pct, currency: meta.currency || 'USD' }};
+    }} catch(e) {{ continue; }}
+  }}
+  throw new Error('failed');
+}}
+
+function _card(name, sym, extra, q) {{
+  if (!q || !q.price) return `<div class="sc flat"><div class="sn">${{name}}</div><div class="ss">${{sym}}</div><div style="color:var(--mu);font-size:.8rem;margin-top:.3rem">暂无数据</div></div>`;
+  const cls   = q.chg > 0 ? 'up' : q.chg < 0 ? 'down' : 'flat';
+  const arrow = q.chg >= 0 ? '▲' : '▼';
+  const sign  = q.chg >= 0 ? '+' : '';
+  return `<div class="sc ${{cls}}">
+    <div class="sn">${{name}}</div><div class="ss">${{sym}}${{extra}}</div>
+    <div class="sp">${{q.currency}} ${{q.price.toFixed(2)}}</div>
+    <div class="sd ${{cls}}">${{arrow}} ${{sign}}${{q.chg.toFixed(2)}} (${{sign}}${{q.pct.toFixed(2)}}%)</div>
+  </div>`;
+}}
+const stockCard = (x, q) => _card(x.n, x.s, '', q);
+const metalCard = (x, q) => _card('&#129351; ' + x.n, x.s, ' / ' + x.unit, q);
 
 /* ── 历史日报 ── */
 function renderHistList() {{
   const el = document.getElementById('hist-list');
-  if (!HISTORY.length) {{
-    el.innerHTML = '<div class="empty">暂无历史记录</div>';
-    return;
-  }}
+  if (!HISTORY.length) {{ el.innerHTML = '<div class="empty">暂无历史记录</div>'; return; }}
   el.innerHTML = HISTORY.map(h =>
     `<div class="hi" onclick="loadHistory('${{h.file}}','${{h.date}}')">
       <span class="hd">&#128197; ${{h.date}}</span>
       <span class="hc">${{h.total}} 条 &rsaquo;</span>
-    </div>`
-  ).join('');
+    </div>`).join('');
 }}
 
 function loadHistory(file, date) {{
@@ -218,7 +259,7 @@ function loadHistory(file, date) {{
 }}
 
 function showModal(date, data) {{
-  document.getElementById('modal-title').textContent = '&#128197; ' + date + ' 历史日报';
+  document.getElementById('modal-title').textContent = date + ' 历史日报';
   const cats = data.categories || {{}};
   const sections = [
     ['&#127760; 国际新闻', cats.international || []],
@@ -230,14 +271,13 @@ function showModal(date, data) {{
     if (!items.length) continue;
     html += `<h3 style="margin:1rem 0 .6rem;font-size:.95rem">${{label}}</h3><div class="cards">`;
     for (const item of items) {{
-      const t = (item.title || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      const d = (item.desc  || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const t = (item.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const d = (item.desc ||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       html += `<a class="card" href="${{item.url}}" target="_blank" rel="noopener">
-        <div class="card-top"><span class="tag">${{item.source || ''}}</span></div>
+        <div class="card-top"><span class="tag">${{item.source||''}}</span></div>
         <div class="card-title">${{t}}</div>
-        ${{d ? `<p class="desc">${{d}}</p>` : ''}}
-        <div class="card-time">${{item.time || ''}}</div>
-      </a>`;
+        ${{d?`<p class="desc">${{d}}</p>`:''}}
+        <div class="card-time">${{item.time||''}}</div></a>`;
     }}
     html += '</div>';
   }}
@@ -250,9 +290,7 @@ function closeModal() {{
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = '';
 }}
-document.getElementById('modal').addEventListener('click', function(e) {{
-  if (e.target === this) closeModal();
-}});
+document.getElementById('modal').addEventListener('click', e => {{ if (e.target === e.currentTarget) closeModal(); }});
 </script>
 </body>
 </html>"""
