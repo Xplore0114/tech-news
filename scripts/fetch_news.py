@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""科技新闻抓取脚本 - 并发版"""
+"""科技新闻抓取脚本 - 四栏目版"""
 import json, os, re, urllib.request
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -18,19 +18,19 @@ def fetch(url, timeout=8):
         print(f"[WARN] {url[:60]} → {e}")
         return ""
 
+# ── 国际新闻 ──────────────────────────────────────────────
 def fetch_hn():
+    """Hacker News Top Stories"""
     items = []
     raw = fetch("https://hacker-news.firebaseio.com/v0/topstories.json")
     if not raw:
         return items
-    ids = json.loads(raw)[:15]
+    ids = json.loads(raw)[:20]
     def get_item(sid):
         d = fetch(f"https://hacker-news.firebaseio.com/v0/item/{sid}.json")
         return json.loads(d) if d else {}
     with ThreadPoolExecutor(max_workers=5) as ex:
-        futures = {ex.submit(get_item, sid): sid for sid in ids}
-        for f in as_completed(futures):
-            d = f.result()
+        for d in ex.map(get_item, ids):
             if d.get("type") == "story" and d.get("title"):
                 items.append({
                     "title": d["title"],
@@ -38,11 +38,13 @@ def fetch_hn():
                     "source": "Hacker News",
                     "score": d.get("score", 0),
                     "time": datetime.fromtimestamp(d.get("time", 0), tz=CST).strftime("%H:%M"),
-                    "category": "综合科技"
+                    "category": "international",
+                    "desc": ""
                 })
-    return sorted(items, key=lambda x: -x["score"])
+    return sorted(items, key=lambda x: -x["score"])[:15]
 
 def fetch_github_trending():
+    """GitHub Trending"""
     items = []
     html = fetch("https://github.com/trending?since=daily")
     if not html:
@@ -58,20 +60,21 @@ def fetch_github_trending():
             "source": "GitHub Trending",
             "score": 0,
             "time": TODAY,
-            "category": "开源项目",
+            "category": "international",
             "desc": desc
         })
     return items
 
+# ── 国内新闻 ──────────────────────────────────────────────
 def fetch_v2ex():
+    """V2EX 技术热帖"""
     items = []
     raw = fetch("https://www.v2ex.com/api/topics/hot.json")
     if not raw:
         return items
     try:
-        topics = json.loads(raw)
-        tech_nodes = {"tech","python","go","javascript","linux","ai","programmer","cloud","k8s"}
-        for t in topics[:20]:
+        tech_nodes = {"tech","python","go","javascript","linux","ai","programmer","cloud"}
+        for t in json.loads(raw)[:20]:
             if t.get("node", {}).get("name", "") in tech_nodes:
                 items.append({
                     "title": t["title"],
@@ -79,22 +82,118 @@ def fetch_v2ex():
                     "source": "V2EX",
                     "score": t.get("replies", 0),
                     "time": TODAY,
-                    "category": "开发者社区"
+                    "category": "domestic",
+                    "desc": ""
                 })
     except Exception as e:
-        print(f"[WARN] V2EX parse: {e}")
+        print(f"[WARN] V2EX: {e}")
     return items
+
+def fetch_juejin():
+    """掘金热门文章"""
+    items = []
+    try:
+        payload = json.dumps({
+            "id_type": 2, "sort_type": 200,
+            "cate_id": "6809637767543259144",
+            "tag_id": "", "cursor": "0", "limit": 10
+        }).encode()
+        req = urllib.request.Request(
+            "https://api.juejin.cn/recommend_api/v1/article/recommend_cate_feed",
+            data=payload,
+            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(req, timeout=8) as r:
+            data = json.loads(r.read().decode())
+        for art in data.get("data", [])[:10]:
+            info = art.get("article_info", {})
+            items.append({
+                "title": info.get("title", ""),
+                "url": f"https://juejin.cn/post/{art.get('article_id','')}",
+                "source": "掘金",
+                "score": info.get("digg_count", 0),
+                "time": TODAY,
+                "category": "domestic",
+                "desc": info.get("brief_content", "")[:80]
+            })
+    except Exception as e:
+        print(f"[WARN] 掘金: {e}")
+    return items
+
+# ── 实时热点 ──────────────────────────────────────────────
+def fetch_weibo_hot():
+    """微博热搜"""
+    items = []
+    html = fetch("https://weibo.com/ajax/side/hotSearch")
+    if not html:
+        # 备用：抓取热搜页面
+        html = fetch("https://s.weibo.com/top/summary?cate=realtimehot")
+    try:
+        data = json.loads(html)
+        realtime = data.get("data", {}).get("realtime", [])
+        for item in realtime[:15]:
+            word = item.get("word", "")
+            if word:
+                items.append({
+                    "title": word,
+                    "url": f"https://s.weibo.com/weibo?q=%23{urllib.parse.quote(word)}%23",
+                    "source": "微博热搜",
+                    "score": item.get("num", 0),
+                    "time": datetime.now(CST).strftime("%H:%M"),
+                    "category": "trending",
+                    "desc": item.get("category", "")
+                })
+    except Exception:
+        # 解析 HTML 备用
+        matches = re.findall(r'<td class="td-02"><a[^>]*>([^<]+)</a>', html)
+        for i, word in enumerate(matches[:15]):
+            items.append({
+                "title": word.strip(),
+                "url": f"https://s.weibo.com/weibo?q=%23{urllib.parse.quote(word.strip())}%23",
+                "source": "微博热搜",
+                "score": 15 - i,
+                "time": datetime.now(CST).strftime("%H:%M"),
+                "category": "trending",
+                "desc": ""
+            })
+    return items
+
+def fetch_zhihu_hot():
+    """知乎热榜"""
+    items = []
+    try:
+        raw = fetch("https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total?limit=15&desktop=true")
+        data = json.loads(raw)
+        for item in data.get("data", [])[:15]:
+            t = item.get("target", )
+            items.append({
+                "title": t.get("title", ""),
+                "url": f"https://www.zhihu.com/question/{t.get('id','')}",
+                "source": "知乎热榜",
+                "score": item.get("detail_text", "0").replace("万热度", ""),
+                "time": datetime.now(CST).strftime("%H:%M"),
+                "category": "trending",
+                "desc": t.get("excerpt", "")[:80]
+            })
+    except Exception as e:
+        print(f"[WARN] 知乎: {e}")
+    return items
+
+import urllib.parse
 
 def main():
     print(f"[INFO] 抓取日期: {TODAY}")
+    tasks = {
+        "HN": fetch_hn,
+        "GitHub": fetch_github_trending,
+        "V2EX": fetch_v2ex,
+        "掘金": fetch_juejin,
+        "微博": fetch_weibo_hot,
+        "知乎": fetch_zhihu_hot,
+    }
     all_news = []
-
-    with ThreadPoolExecutor(max_workers=3) as ex:
-        futures = {
-            ex.submit(fetch_hn): "HN",
-            ex.submit(fetch_github_trending): "GitHub",
-            ex.submit(fetch_v2ex): "V2EX",
-        }
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        futures = {ex.submit(fn): name for name, fn in tasks.items()}
         for f in as_completed(futures):
             name = futures[f]
             result = f.result()
@@ -108,16 +207,40 @@ def main():
             seen.add(item["url"])
             unique.append(item)
 
+    # 按栏目分组
+    categories = {"international": [], "domestic": [], "trending": []}
+    for item in unique:
+        cat = item.get("category", "international")
+        categories.setdefault(cat, []).append(item)
+
     output = {
         "date": TODAY,
         "generated_at": datetime.now(CST).strftime("%Y-%m-%d %H:%M:%S CST"),
         "total": len(unique),
-        "items": unique
+        "categories": categories
     }
     out_path = os.path.join(OUTPUT_DIR, "news.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
     print(f"[INFO] 保存 {len(unique)} 条 → {out_path}")
+
+    # 同时维护历史索引
+    history_index_path = os.path.join(OUTPUT_DIR, "history.json")
+    history = []
+    if os.path.exists(history_index_path):
+        with open(history_index_path, encoding="utf-8") as f:
+            history = json.load(f)
+    # 避免重复
+    if not any(h["date"] == TODAY for h in history):
+        history.insert(0, {"date": TODAY, "total": len(unique), "file": f"news_{TODAY}.json"})
+        history = history[:30]  # 保留最近30天
+        with open(history_index_path, "w", encoding="utf-8") as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
+    # 保存当日归档
+    archive_path = os.path.join(OUTPUT_DIR, f"news_{TODAY}.json")
+    import shutil
+    shutil.copy(out_path, archive_path)
+    print(f"[INFO] 归档 → {archive_path}")
 
 if __name__ == "__main__":
     main()
