@@ -27,6 +27,9 @@ jobs:
       - name: 抓取 AI 公众号
         run: python scripts/fetch_wechat_ai.py
 
+      - name: 抓取历史股价
+        run: python scripts/fetch_stock_history.py
+
       - name: 生成页面
         run: python scripts/generate_html.py
 

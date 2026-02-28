@@ -138,8 +138,8 @@ def main():
     added = [x for x in new_items if x["url"] not in existing_urls]
     all_items = existing + added
 
-    # 按时间倒序，只保留最近 7 天
-    cutoff = int(time.time()) - 7 * 86400
+    # 按时间倒序，只保留最近 60 天
+    cutoff = int(time.time()) - 60 * 86400
     all_items = [x for x in all_items if x.get("timestamp", 0) >= cutoff]
     all_items.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
 

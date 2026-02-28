@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>日知录 · 2026-02-28</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{
   --bg:#0d1117;--sf:#161b22;--sf2:#1c2128;--bd:#30363d;--bd2:#21262d;
@@ -127,6 +128,7 @@ a{color:inherit;text-decoration:none}
 .modal-close:hover{color:var(--tx);background:var(--hv)}
 
 footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-top:1px solid var(--bd);margin-top:2rem}
+
 /* ── 天气组件 ── */
 .weather-bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
 .weather-city{display:flex;flex-direction:column;gap:.1rem;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.18);border-radius:6px;padding:.3rem .6rem;min-width:110px}
@@ -136,7 +138,6 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
 .weather-day-label{font-size:.6rem;color:var(--mu)}
 .weather-icon{font-size:.9rem;line-height:1}
 .weather-temp{font-size:.7rem;color:var(--tx);font-weight:600;white-space:nowrap}
-.weather-desc{font-size:.6rem;color:var(--mu);white-space:nowrap}
 .weather-loading{font-size:.72rem;color:var(--mu)}
 
 /* ── 手动刷新按钮 ── */
@@ -148,6 +149,49 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
 .last-updated{font-size:.72rem;color:var(--mu);display:flex;align-items:center;gap:.3rem}
 .last-updated .upd-type{font-size:.65rem;padding:.1rem .3rem;border-radius:3px;background:rgba(63,185,80,.12);color:var(--gn)}
 .last-updated .upd-type.manual{background:rgba(88,166,255,.12);color:var(--ac)}
+
+/* ── 股价图表弹窗 ── */
+.chart-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;overflow-y:auto;padding:2rem 1rem}
+.chart-modal.open{display:block}
+.chart-box{background:var(--sf);border:1px solid var(--bd);border-radius:12px;max-width:860px;margin:0 auto;padding:1.5rem}
+.chart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.chart-title{font-size:1rem;font-weight:700}
+.chart-close{background:none;border:none;color:var(--mu);font-size:1.4rem;cursor:pointer;padding:.2rem .5rem;border-radius:4px}
+.chart-close:hover{color:var(--tx);background:var(--hv)}
+.chart-ranges{display:flex;gap:.4rem;flex-wrap:wrap}
+.chart-range{font-size:.75rem;padding:.25rem .6rem;border-radius:4px;border:1px solid var(--bd);color:var(--mu);cursor:pointer;transition:all .15s}
+.chart-range:hover{border-color:var(--ac);color:var(--ac)}
+.chart-range.active{background:var(--ac);border-color:var(--ac);color:#000;font-weight:700}
+.chart-meta{font-size:.78rem;color:var(--mu);margin-bottom:.8rem;display:flex;gap:1rem;flex-wrap:wrap}
+.chart-meta .cm-price{font-size:1.3rem;font-weight:800;color:var(--tx)}
+.chart-meta .cm-chg.up{color:var(--gn)}.chart-meta .cm-chg.down{color:var(--rd)}
+.chart-wrap{position:relative;height:320px}
+.chart-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:.85rem}
+
+/* ── 日报弹窗 ── */
+.daily-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;overflow-y:auto;padding:2rem 1rem}
+.daily-modal.open{display:block}
+.daily-box{background:var(--sf);border:1px solid var(--bd);border-radius:12px;max-width:780px;margin:0 auto;padding:1.8rem}
+.daily-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem}
+.daily-head h2{font-size:1.1rem;font-weight:800}
+.daily-close{background:none;border:none;color:var(--mu);font-size:1.4rem;cursor:pointer;padding:.2rem .5rem;border-radius:4px}
+.daily-close:hover{color:var(--tx);background:var(--hv)}
+.daily-section{margin-bottom:1.4rem}
+.daily-section h3{font-size:.85rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;padding-bottom:.4rem;border-bottom:1px solid var(--bd2);margin-bottom:.7rem}
+.daily-item{display:flex;gap:.6rem;padding:.35rem 0;border-bottom:1px solid var(--bd2);align-items:flex-start}
+.daily-item:last-child{border-bottom:none}
+.daily-num{font-size:.72rem;font-weight:800;color:var(--mu);min-width:1.4rem;padding-top:.1rem}
+.daily-link{font-size:.83rem;line-height:1.5;color:var(--tx);flex:1}
+.daily-link:hover{color:var(--ac)}
+.daily-src{font-size:.65rem;padding:.1rem .3rem;border-radius:3px;background:rgba(88,166,255,.1);color:var(--ac);flex-shrink:0;margin-top:.15rem}
+
+/* ── AI 视图切换 ── */
+.ai-view-btn{font-size:.75rem;padding:.28rem .7rem;border-radius:4px;border:1px solid var(--bd);color:var(--mu);cursor:pointer;transition:all .15s;user-select:none}
+.ai-view-btn:hover{border-color:var(--ac);color:var(--ac)}
+.ai-view-btn.active{background:var(--ac);border-color:var(--ac);color:#000;font-weight:700}
+.account-block{margin-bottom:1.8rem}
+.account-block-title{font-size:.85rem;font-weight:700;color:var(--tx);padding:.4rem 0 .6rem;border-bottom:2px solid var(--pu);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+.account-block-count{font-size:.7rem;color:var(--mu);font-weight:400;margin-left:.3rem}
 
 /* ── AI 资讯 ── */
 .ai-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-bottom:1.2rem}
@@ -211,6 +255,7 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
     <div class="nav-tab" onclick="switchTab('market',this)">&#128200; 行情</div>
     <div class="nav-tab" onclick="switchTab('ai',this)">&#129302; AI资讯</div>
     <div class="nav-tab" onclick="switchTab('archive',this)">&#128218; 归档</div>
+    <div class="nav-tab" onclick="openDailyReport()" style="color:var(--pu)">&#128203; 今日日报</div>
   </div>
 </nav>
 <main class="site-main">
@@ -305,6 +350,10 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
     </div>
     <span class="ai-ts" id="ai-ts"></span>
   </div>
+  <div style="display:flex;gap:.5rem;margin-bottom:1rem">
+    <span class="ai-view-btn active" id="ai-view-timeline" onclick="setAIView('timeline',this)">&#128197; 时间线</span>
+    <span class="ai-view-btn" id="ai-view-account" onclick="setAIView('account',this)">&#128240; 按公众号</span>
+  </div>
   <div id="ai-timeline"></div>
 </div>
 <div id="archive" class="panel">
@@ -319,6 +368,48 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
       <button class="modal-close" onclick="closeModal()">&#10005;</button>
     </div>
     <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- 股价历史图表弹窗 -->
+<div class="chart-modal" id="chart-modal">
+  <div class="chart-box">
+    <div class="chart-head">
+      <div>
+        <div class="chart-title" id="chart-title">--</div>
+        <div class="chart-meta">
+          <span class="cm-price" id="chart-price">--</span>
+          <span class="cm-chg" id="chart-chg">--</span>
+          <span id="chart-currency" style="color:var(--mu);font-size:.75rem"></span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.6rem">
+        <button class="chart-close" onclick="closeChartModal()">&#10005;</button>
+        <div class="chart-ranges" id="chart-ranges">
+          <span class="chart-range" data-range="1mo" onclick="setChartRange(this,'1mo')">1月</span>
+          <span class="chart-range active" data-range="3mo" onclick="setChartRange(this,'3mo')">3月</span>
+          <span class="chart-range" data-range="6mo" onclick="setChartRange(this,'6mo')">6月</span>
+          <span class="chart-range" data-range="1y"  onclick="setChartRange(this,'1y')">1年</span>
+          <span class="chart-range" data-range="3y"  onclick="setChartRange(this,'3y')">3年</span>
+          <span class="chart-range" data-range="5y"  onclick="setChartRange(this,'5y')">5年</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="chart-loading">加载中...</div>
+      <canvas id="stock-chart" style="display:none"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- 今日日报弹窗 -->
+<div class="daily-modal" id="daily-modal">
+  <div class="daily-box">
+    <div class="daily-head">
+      <h2>&#128203; 今日日报</h2>
+      <button class="daily-close" onclick="closeDailyModal()">&#10005;</button>
+    </div>
+    <div id="daily-body"><div class="empty">加载中...</div></div>
   </div>
 </div>
 <footer>
@@ -358,11 +449,11 @@ function switchTab(id, el) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   el.classList.add('active');
-  if (id === 'market')  loadMarket(false);
-  if (id === 'archive') renderArchive();
+  if (id === 'market')   loadMarket(false);
+  if (id === 'archive')  renderArchive();
   if (id === 'overview') loadOverviewMarket();
-  if (id === 'ai') loadAI();
-  if (id === 'intl') translateCards();
+  if (id === 'ai')       loadAI();
+  if (id === 'intl')     translateCards();
 }
 function switchTabByName(id) {
   const tabs = document.querySelectorAll('.nav-tab');
@@ -392,16 +483,17 @@ async function fetchQuote(symbol) {
 }
 
 function mCard(name, sym, extra, q, cur) {
-  if (!q || !q.price) return `<div class="mcard flat"><div class="mc-name">${name}</div><div class="mc-sym">${sym}</div><div class="mc-na">暂无数据</div></div>`;
+  if (!q || !q.price) return `<div class="mcard flat" data-symbol="${sym}" data-name="${name}" onclick="openStockChart('${sym}','${name}')"><div class="mc-name">${name}</div><div class="mc-sym">${sym}</div><div class="mc-na">暂无数据</div></div>`;
   const cls   = q.chg > 0 ? 'up' : q.chg < 0 ? 'down' : 'flat';
   const arrow = q.chg >= 0 ? '▲' : '▼';
   const sign  = q.chg >= 0 ? '+' : '';
   const label = cur ? cur + ' ' : '';
-  return `<div class="mcard ${cls}">
+  return `<div class="mcard ${cls}" data-symbol="${sym}" data-name="${name}" onclick="openStockChart('${sym}','${name}')" style="cursor:pointer">
     <div class="mc-name">${name}</div>
     <div class="mc-sym">${sym}${extra}</div>
     <div class="mc-price">${label}${q.price.toFixed(2)}</div>
     <div class="mc-chg ${cls}">${arrow} ${sign}${q.chg.toFixed(2)} (${sign}${q.pct.toFixed(2)}%)</div>
+    <div style="font-size:.62rem;color:var(--mu);margin-top:.2rem">点击查看走势 ›</div>
   </div>`;
 }
 
@@ -485,84 +577,18 @@ function closeModal() {
 }
 document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 
-// 首页默认加载速览行情，并记录自动更新时间
+// 首页默认加载速览行情，记录自动更新时间
 loadOverviewMarket().then(() => setLastUpdated('auto')).catch(() => setLastUpdated('auto'));
 
-// ── AI 资讯 ──
-let aiData = null;
-let aiFilter = 'all';
-
-async function loadAI() {
-  if (aiData) { renderAI(); return; }
-  document.getElementById('ai-timeline').innerHTML = '<div class="empty">正在加载 AI 资讯...</div>';
-  try {
-    const r = await fetch('data/ai_news.json?t=' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    aiData = await r.json();
-    document.getElementById('ai-ts').textContent = '更新于 ' + (aiData.updated_at || '');
-    renderAI();
-  } catch(e) {
-    document.getElementById('ai-timeline').innerHTML = '<div class="empty">AI 资讯暂未生成，等待每日更新...</div>';
-  }
-}
-
-function filterAI(el) {
-  document.querySelectorAll('.ai-filter').forEach(x => x.classList.remove('active'));
-  el.classList.add('active');
-  aiFilter = el.dataset.src;
-  renderAI();
-}
-
-function renderAI() {
-  if (!aiData) return;
-  let items = aiData.items || [];
-  if (aiFilter !== 'all') items = items.filter(x => x.source === aiFilter);
-  if (!items.length) {
-    document.getElementById('ai-timeline').innerHTML = '<div class="empty">暂无数据</div>';
-    return;
-  }
-  // 按日期分组
-  const groups = {};
-  items.forEach(item => {
-    const d = item.date || '未知日期';
-    if (!groups[d]) groups[d] = [];
-    groups[d].push(item);
-  });
-  const dates = Object.keys(groups).sort((a,b) => b.localeCompare(a));
-  let html = '';
-  const today = new Date().toISOString().slice(0,10);
-  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
-  for (const date of dates) {
-    const label = date === today ? '今天 ' + date : date === yesterday ? '昨天 ' + date : date;
-    html += `<div class="ai-day"><div class="ai-day-label">${label}</div>`;
-    for (const item of groups[date]) {
-      const t = (item.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      const d = (item.desc||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      html += `<a class="ai-item" href="${item.url}" target="_blank" rel="noopener">
-        <span class="ai-time">${item.time||''}</span>
-        <span class="ai-src">${item.source||''}</span>
-        <div class="ai-content">
-          <div class="ai-title">${t}</div>
-          ${d ? `<div class="ai-desc">${d}</div>` : ''}
-        </div>
-      </a>`;
-    }
-    html += '</div>';
-  }
-  document.getElementById('ai-timeline').innerHTML = html;
-}
 // ── 天气 ──
 const WEATHER_CITIES = [
   { name: '北京', lat: 39.9042, lon: 116.4074 },
   { name: '杭州', lat: 30.2741, lon: 120.1551 },
 ];
 const WEATHER_ICONS = {
-  0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
-  45:'🌫️',48:'🌫️',
-  51:'🌦️',53:'🌦️',55:'🌧️',
-  61:'🌧️',63:'🌧️',65:'🌧️',
-  71:'🌨️',73:'🌨️',75:'❄️',
-  80:'🌦️',81:'🌧️',82:'⛈️',
+  0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',
+  51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',
+  71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',
   95:'⛈️',96:'⛈️',99:'⛈️',
 };
 function wIcon(code){ return WEATHER_ICONS[code] || '🌡️'; }
@@ -572,16 +598,14 @@ async function loadWeather() {
   try {
     const results = await Promise.all(WEATHER_CITIES.map(async city => {
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}`
-        + `&daily=weathercode,temperature_2m_max,temperature_2m_min`
-        + `&timezone=Asia%2FShanghai&forecast_days=2`;
+        + `&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai&forecast_days=2`;
       const r = await fetch(url);
       if (!r.ok) throw new Error('weather fetch failed');
       const d = await r.json();
       return { city: city.name, daily: d.daily };
     }));
-
     bar.innerHTML = results.map(({ city, daily }) => {
-      const days = [0, 1].map(i => {
+      const days = [0,1].map(i => {
         const label = i === 0 ? '今天' : '明天';
         const icon  = wIcon(daily.weathercode[i]);
         const hi    = Math.round(daily.temperature_2m_max[i]);
@@ -605,11 +629,7 @@ async function loadWeather() {
 // ── 更新时间记录 ──
 function setLastUpdated(type) {
   const now = new Date();
-  const fmt = now.toLocaleString('zh-CN', {
-    month:'2-digit', day:'2-digit',
-    hour:'2-digit', minute:'2-digit', second:'2-digit',
-    hour12: false
-  });
+  const fmt = now.toLocaleString('zh-CN', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
   document.getElementById('upd-time').textContent = fmt;
   const typeEl = document.getElementById('upd-type');
   typeEl.textContent = type === 'manual' ? '手动' : '自动';
@@ -617,7 +637,6 @@ function setLastUpdated(type) {
   document.getElementById('last-updated').style.display = 'flex';
   try { localStorage.setItem('lastUpdated', JSON.stringify({ time: fmt, type })); } catch(e){}
 }
-
 function restoreLastUpdated() {
   try {
     const saved = localStorage.getItem('lastUpdated');
@@ -638,19 +657,12 @@ async function manualRefresh() {
   if (btn.classList.contains('spinning')) return;
   btn.classList.add('spinning');
   btn.disabled = true;
-
-  // 重置缓存标志，强制重新拉取
-  marketLoaded = false;
-  ovMarketLoaded = false;
-  aiData = null;
-
+  marketLoaded = false; ovMarketLoaded = false; aiData = null;
   try {
-    // 重新拉取当前激活面板的数据
     const activePanel = document.querySelector('.panel.active')?.id;
     if (activePanel === 'market')   await loadMarket(true);
     if (activePanel === 'overview') await loadOverviewMarket();
     if (activePanel === 'ai')       await loadAI();
-    // 天气也刷新
     await loadWeather();
     setLastUpdated('manual');
   } finally {
@@ -659,10 +671,106 @@ async function manualRefresh() {
   }
 }
 
-// 页面加载时恢复上次更新时间 + 加载天气
 restoreLastUpdated();
 loadWeather();
 
+// ── AI 资讯 ──
+let aiData = null;
+let aiFilter = 'all';
+let aiView = 'timeline';
+
+async function loadAI() {
+  if (aiData) { renderAI(); return; }
+  document.getElementById('ai-timeline').innerHTML = '<div class="empty">正在加载 AI 资讯...</div>';
+  try {
+    const r = await fetch('data/ai_news.json?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    aiData = await r.json();
+    document.getElementById('ai-ts').textContent = '更新于 ' + (aiData.updated_at || '');
+    renderAI();
+  } catch(e) {
+    document.getElementById('ai-timeline').innerHTML = '<div class="empty">AI 资讯暂未生成，等待每日更新...</div>';
+  }
+}
+
+function setAIView(view, el) {
+  document.querySelectorAll('.ai-view-btn').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  aiView = view;
+  renderAI();
+}
+
+function filterAI(el) {
+  document.querySelectorAll('.ai-filter').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  aiFilter = el.dataset.src;
+  renderAI();
+}
+
+function renderAI() {
+  if (!aiData) return;
+  let items = aiData.items || [];
+  if (aiFilter !== 'all') items = items.filter(x => x.source === aiFilter);
+  if (!items.length) {
+    document.getElementById('ai-timeline').innerHTML = '<div class="empty">暂无数据</div>';
+    return;
+  }
+  if (aiView === 'account') renderAIByAccount(items);
+  else renderAITimeline(items);
+}
+
+function aiItemHTML(item) {
+  const t = (item.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const d = (item.desc||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return `<a class="ai-item" href="${item.url}" target="_blank" rel="noopener">
+    <span class="ai-time">${item.time||''}</span>
+    <span class="ai-src">${item.source||''}</span>
+    <div class="ai-content">
+      <div class="ai-title">${t}</div>
+      ${d ? `<div class="ai-desc">${d}</div>` : ''}
+    </div>
+  </a>`;
+}
+
+function renderAITimeline(items) {
+  const groups = {};
+  items.forEach(item => {
+    const d = item.date || '未知日期';
+    if (!groups[d]) groups[d] = [];
+    groups[d].push(item);
+  });
+  const dates = Object.keys(groups).sort((a,b) => b.localeCompare(a));
+  const today = new Date().toISOString().slice(0,10);
+  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  let html = '';
+  for (const date of dates) {
+    const label = date === today ? '今天 ' + date : date === yesterday ? '昨天 ' + date : date;
+    html += `<div class="ai-day"><div class="ai-day-label">${label}</div>`;
+    for (const item of groups[date]) html += aiItemHTML(item);
+    html += '</div>';
+  }
+  document.getElementById('ai-timeline').innerHTML = html;
+}
+
+function renderAIByAccount(items) {
+  const groups = {};
+  items.forEach(item => {
+    const src = item.source || '未知';
+    if (!groups[src]) groups[src] = [];
+    groups[src].push(item);
+  });
+  const sources = Object.keys(groups).sort((a,b) => groups[b].length - groups[a].length);
+  let html = '';
+  for (const src of sources) {
+    const srcItems = groups[src].sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+    html += `<div class="account-block">
+      <div class="account-block-title">📰 ${src}<span class="account-block-count">${srcItems.length} 篇</span></div>
+      <div>`;
+    for (const item of srcItems) html += aiItemHTML(item);
+    html += '</div></div>';
+  }
+  document.getElementById('ai-timeline').innerHTML = html;
+}
 let translateDone = false;
 async function translateCards() {
   if (translateDone) return;
@@ -700,7 +808,166 @@ async function translateCard(card) {
   } catch(e) { /* 翻译失败静默跳过 */ }
 }
 
-// 切换到国际新闻时触发翻译（直接在 switchTab 内处理，避免循环引用）
+// 切换到国际新闻时触发翻译（直接在 switchTab 内处理）
+
+// ── 股价历史图表 ──
+let chartInstance = null;
+let historyData = null;
+let currentSymbol = null;
+let currentRange = '3mo';
+
+async function loadHistoryData() {
+  if (historyData) return historyData;
+  try {
+    const r = await fetch('data/stock_history.json?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    historyData = await r.json();
+    return historyData;
+  } catch(e) { return null; }
+}
+
+function filterPoints(points, range) {
+  const months = {'1mo':1,'3mo':3,'6mo':6,'1y':12,'3y':36,'5y':60}[range] || 3;
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - months);
+  const cutStr = cutoff.toISOString().slice(0,10);
+  return points.filter(p => p.d >= cutStr);
+}
+
+async function openStockChart(symbol, name) {
+  currentSymbol = symbol;
+  document.getElementById('chart-title').textContent = name + ' (' + symbol + ')';
+  document.getElementById('chart-price').textContent = '--';
+  document.getElementById('chart-chg').textContent = '';
+  document.getElementById('chart-loading').style.display = 'flex';
+  document.getElementById('chart-loading').textContent = '加载中...';
+  document.getElementById('stock-chart').style.display = 'none';
+  document.getElementById('chart-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const data = await loadHistoryData();
+  if (!data || !data.stocks || !data.stocks[symbol]) {
+    document.getElementById('chart-loading').textContent = '暂无历史数据，等待每日更新...';
+    return;
+  }
+  renderChart(symbol, currentRange);
+}
+
+function renderChart(symbol, range) {
+  if (!historyData || !historyData.stocks[symbol]) return;
+  const stock = historyData.stocks[symbol];
+  const pts = filterPoints(stock.points, range);
+  if (!pts.length) {
+    document.getElementById('chart-loading').textContent = '该时间段暂无数据';
+    document.getElementById('chart-loading').style.display = 'flex';
+    document.getElementById('stock-chart').style.display = 'none';
+    return;
+  }
+  const labels = pts.map(p => p.d);
+  const values = pts.map(p => p.c);
+  const first = values[0], last = values[values.length-1];
+  const chg = last - first, pct = first ? (chg/first*100) : 0;
+  const isUp = chg >= 0;
+  document.getElementById('chart-price').textContent = (stock.currency||'') + ' ' + last.toFixed(2);
+  const chgEl = document.getElementById('chart-chg');
+  chgEl.textContent = (isUp?'▲ +':'▼ ') + chg.toFixed(2) + ' (' + (isUp?'+':'') + pct.toFixed(2) + '%)';
+  chgEl.className = 'cm-chg ' + (isUp?'up':'down');
+  document.getElementById('chart-loading').style.display = 'none';
+  const canvas = document.getElementById('stock-chart');
+  canvas.style.display = 'block';
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  const color = isUp ? '#3fb950' : '#f85149';
+  chartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        borderColor: color, borderWidth: 2,
+        pointRadius: pts.length > 200 ? 0 : 2, pointHoverRadius: 4,
+        fill: true,
+        backgroundColor: (ctx2) => {
+          const g = ctx2.chart.ctx.createLinearGradient(0,0,0,300);
+          g.addColorStop(0, color+'33'); g.addColorStop(1, color+'00'); return g;
+        },
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1c2128', borderColor: '#30363d', borderWidth: 1,
+          titleColor: '#8b949e', bodyColor: '#c9d1d9',
+          callbacks: { label: ctx3 => (stock.currency||'') + ' ' + ctx3.parsed.y.toFixed(2) }
+        }
+      },
+      scales: {
+        x: { ticks: { color:'#8b949e', maxTicksLimit:8, maxRotation:0, callback:(v,i)=>labels[i]?.slice(5) }, grid:{ color:'#21262d' } },
+        y: { ticks: { color:'#8b949e' }, grid:{ color:'#21262d' }, position:'right' }
+      }
+    }
+  });
+}
+
+function setChartRange(el, range) {
+  document.querySelectorAll('.chart-range').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  currentRange = range;
+  if (currentSymbol) renderChart(currentSymbol, range);
+}
+
+function closeChartModal() {
+  document.getElementById('chart-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('chart-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeChartModal();
+});
+
+// ── 今日日报 ──
+function openDailyReport() {
+  document.getElementById('daily-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderDailyReport();
+}
+function closeDailyModal() {
+  document.getElementById('daily-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('daily-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeDailyModal();
+});
+
+function renderDailyReport() {
+  const body = document.getElementById('daily-body');
+  const intlCards  = Array.from(document.querySelectorAll('#intl .card'));
+  const domCards   = Array.from(document.querySelectorAll('#dom .card'));
+  const trendCards = Array.from(document.querySelectorAll('#trend .card'));
+  function cardsToItems(cards, limit) {
+    return cards.slice(0, limit).map((c, i) => {
+      const title = c.querySelector('.card-zh')?.textContent?.trim()
+                 || c.querySelector('.card-title')?.textContent?.trim() || '';
+      const src   = c.querySelector('.tag')?.textContent?.trim() || '';
+      const href  = c.getAttribute('href') || '#';
+      return `<div class="daily-item">
+        <span class="daily-num">${i+1}.</span>
+        <a class="daily-link" href="${href}" target="_blank" rel="noopener">${title}</a>
+        <span class="daily-src">${src}</span>
+      </div>`;
+    }).join('');
+  }
+  const today = document.getElementById('hd-date')?.textContent?.replace('📅 ','') || '';
+  const total = document.getElementById('hd-total')?.textContent || '';
+  let html = `<div style="font-size:.8rem;color:var(--mu);margin-bottom:1.2rem">${today} &nbsp;·&nbsp; ${total} &nbsp;·&nbsp; 由日知录自动整理</div>`;
+  if (intlCards.length)  html += `<div class="daily-section"><h3>🌍 国际科技</h3>${cardsToItems(intlCards,8)}</div>`;
+  if (domCards.length)   html += `<div class="daily-section"><h3>🇨🇳 国内资讯</h3>${cardsToItems(domCards,8)}</div>`;
+  if (trendCards.length) html += `<div class="daily-section"><h3>🔥 热点话题</h3>${cardsToItems(trendCards,8)}</div>`;
+  if (!intlCards.length && !domCards.length && !trendCards.length)
+    html = '<div class="empty">暂无今日数据</div>';
+  body.innerHTML = html;
+}
 </script>
 </body>
 </html>
