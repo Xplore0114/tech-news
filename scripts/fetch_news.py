@@ -152,9 +152,10 @@ def fetch_weibo_hot():
                 "url": url,
                 "source": "微博热搜",
                 "score": item.get("num", 0),
-                "time": datetime.now(CST).strftime("%H:%M"),
+                "time": datetime.now(CST).strftime("%m-%d %H:%M"),
+                "label": label,
                 "category": "trending",
-                "desc": f"#{label}# 热度 {item.get('num',0):,}" if label else f"热度 {item.get('num',0):,}",
+                "desc": f"热度 {item.get('num',0):,}",
             })
     except Exception as e:
         print(f"[WARN] 微博热搜: {e}")

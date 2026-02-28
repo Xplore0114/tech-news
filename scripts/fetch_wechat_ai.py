@@ -140,7 +140,7 @@ def parse_article_list(html, source_name):
             "desc": desc,
             "url": link,
             "date": datetime.fromtimestamp(ts, tz=CST).strftime("%Y-%m-%d"),
-            "time": datetime.fromtimestamp(ts, tz=CST).strftime("%H:%M"),
+            "time": datetime.fromtimestamp(ts, tz=CST).strftime("%m-%d %H:%M"),
             "timestamp": ts,
         })
 

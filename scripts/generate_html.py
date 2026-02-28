@@ -35,13 +35,19 @@ def render_cards(items, limit=None, translate=False):
         score = item.get("score", 0)
         time_ = esc(item.get("time", ""))
         desc  = esc(item.get("desc", ""))
+        label = item.get("label", "")  # 微博热搜标签：沸/新/热/爆
         tag_cls = src_colors.get(src, "tag-default")
         s_html = f'<span class="score">&#9650; {score}</span>' if score else ""
+        # 微博标签徽章
+        label_map = {"沸": ("wb-label-boil","🔥"), "爆": ("wb-label-boil","💥"),
+                     "新": ("wb-label-new","🆕"), "热": ("wb-label-hot","🌡")}
+        lc, li = label_map.get(label, ("",""))
+        l_html = f'<span class="wb-label {lc}">{li} {label}</span>' if lc else ""
         d_html = f'<p class="desc">{desc}</p>' if desc else ""
         tr_attr = ' data-translate="1"' if translate else ""
         out += (
             f'<a class="card" href="{url}" target="_blank" rel="noopener"{tr_attr}>'
-            f'<div class="card-top"><span class="tag {tag_cls}">{esc(src)}</span>{s_html}</div>'
+            f'<div class="card-top"><span class="tag {tag_cls}">{esc(src)}</span>{l_html}{s_html}</div>'
             f'<div class="card-title">{title}</div>'
             f'<div class="card-zh" style="display:none"></div>'
             f'{d_html}'
@@ -391,16 +397,44 @@ footer{{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-t
 .ai-content{{flex:1;min-width:0}}
 .ai-title{{font-size:.88rem;font-weight:600;line-height:1.5;color:var(--tx)}}
 .ai-desc{{font-size:.76rem;color:var(--mu);line-height:1.4;margin-top:.2rem;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}}
+/* ── 微博热搜标签徽章 ── */
+.wb-label{{font-size:.68rem;padding:.1rem .4rem;border-radius:4px;font-weight:700;margin-left:.3rem;vertical-align:middle}}
+.wb-label-boil{{background:rgba(255,80,50,.15);color:#ff5032;border:1px solid rgba(255,80,50,.3)}}
+.wb-label-new{{background:rgba(0,180,120,.12);color:#00b478;border:1px solid rgba(0,180,120,.25)}}
+.wb-label-hot{{background:rgba(255,160,0,.12);color:#e08800;border:1px solid rgba(255,160,0,.25)}}
 @media(max-width:900px){{
   .layout{{grid-template-columns:1fr}}
   .sidebar{{display:none}}
   .overview-grid{{grid-template-columns:1fr}}
+  .trend-layout{{grid-template-columns:1fr}}
+  .ov-rank-list{{display:none}}
+  .focus-add-box{{width:90vw}}
 }}
 @media(max-width:600px){{
-  .site-header{{padding:0 1rem}}
-  .site-main{{padding:1rem}}
-  .market-grid,.cards{{grid-template-columns:1fr 1fr}}
-  .stat-row{{gap:.8rem}}
+  .site-header{{padding:0 .8rem}}
+  .site-main{{padding:.8rem}}
+  .header-inner{{flex-wrap:wrap;gap:.4rem}}
+  .header-meta{{flex-wrap:wrap;gap:.3rem;font-size:.72rem}}
+  .nav-tabs{{gap:.2rem;overflow-x:auto;flex-wrap:nowrap;padding-bottom:.3rem}}
+  .nav-tab{{font-size:.75rem;padding:.4rem .7rem;white-space:nowrap}}
+  .market-grid{{grid-template-columns:1fr 1fr}}
+  .cards{{grid-template-columns:1fr}}
+  .stat-row{{gap:.5rem}}
+  .stat-card{{padding:.6rem .8rem}}
+  .stat-num{{font-size:1.4rem}}
+  .overview-grid{{grid-template-columns:1fr}}
+  .ov-block{{padding:.8rem}}
+  .weather-cities{{flex-direction:column;gap:.6rem}}
+  .weather-city{{min-width:unset;width:100%}}
+  .focus-toolbar{{flex-direction:column;align-items:flex-start}}
+  .focus-topics{{gap:.3rem}}
+  .focus-topic{{font-size:.72rem;padding:.25rem .65rem}}
+  .daily-box{{width:95vw;max-height:90vh}}
+  .modal-box{{width:95vw;max-height:90vh}}
+  .ai-filters{{gap:.25rem}}
+  .ai-filter{{font-size:.72rem;padding:.25rem .55rem}}
+  .logo-sub{{display:none}}
+  .weather-bar{{font-size:.72rem}}
 }}
 </style>
 </head>
@@ -1044,10 +1078,16 @@ async function loadFocusTopic(query, label) {{
           const desc = (item.desc||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
           const src = item.source || '';
           const score = item.score ? `<span class="score">${{parseInt(item.score).toLocaleString()}}</span>` : '';
+          const lmap = {{'沸':'wb-label-boil','爆':'wb-label-boil','新':'wb-label-new','热':'wb-label-hot'}};
+          const licon = {{'沸':'🔥','爆':'💥','新':'🆕','热':'🌡'}};
+          const lbl = item.label || '';
+          const lbadge = lbl && lmap[lbl] ? `<span class="wb-label ${{lmap[lbl]}}">${{licon[lbl]}} ${{lbl}}</span>` : '';
+          const timeStr = item.time ? `<div class="card-time">${{item.time}}</div>` : '';
           return `<a class="card" href="${{item.url}}" target="_blank" rel="noopener">
-            <div class="card-top"><span class="tag tag-default">${{src}}</span>${{score}}</div>
+            <div class="card-top"><span class="tag tag-default">${{src}}</span>${{lbadge}}${{score}}</div>
             <div class="card-title">${{t}}</div>
             ${{desc ? `<p class="desc">${{desc}}</p>` : ''}}
+            ${{timeStr}}
           </a>`;
         }}).join('')}}
       </div>`;
