@@ -31,22 +31,36 @@ STOCKS = [
     {"symbol": "PDD",   "name": "拼多多",  "currency": "USD"},
 ]
 
-def fetch_history(symbol, outputsize=1300):
-    url = (
-        f"https://api.twelvedata.com/time_series"
-        f"?symbol={urllib.parse.quote(symbol)}"
-        f"&interval=1day&outputsize={outputsize}&apikey={API_KEY}"
-    )
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=15) as r:
-        d = json.loads(r.read().decode())
-    if d.get("status") == "error" or "values" not in d:
-        raise Exception(d.get("message", "no values"))
-    points = []
-    for row in reversed(d["values"]):  # 倒序变正序（旧→新）
-        points.append({"d": row["datetime"], "c": round(float(row["close"]), 2)})
-    currency = d.get("meta", {}).get("currency", "USD")
-    return points, currency
+def fetch_history(symbol, range_="5y"):
+    """从 Yahoo Finance 拉取日线数据（走代理）"""
+    for host in ["query1", "query2"]:
+        url = (
+            f"https://{host}.finance.yahoo.com/v8/finance/chart/"
+            + urllib.parse.quote(symbol)
+            + f"?interval=1d&range={range_}"
+        )
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+                "Accept": "application/json",
+                "Referer": "https://finance.yahoo.com/",
+            })
+            with urllib.request.urlopen(req, timeout=15) as r:
+                d = json.loads(r.read().decode())
+            result = d["chart"]["result"][0]
+            timestamps = result.get("timestamp", [])
+            closes = result["indicators"]["quote"][0].get("close", [])
+            currency = result["meta"].get("currency", "USD")
+            points = []
+            for ts, c in zip(timestamps, closes):
+                if c is None:
+                    continue
+                date_str = datetime.utcfromtimestamp(ts).strftime("%Y-%m-%d")
+                points.append({"d": date_str, "c": round(c, 2)})
+            return points, currency
+        except Exception as e:
+            print(f"  [{symbol}] {host} 失败: {e}")
+    return [], "USD"
 
 def main():
     print(f"[INFO] 抓取历史股价 @ {datetime.now(CST).strftime('%Y-%m-%d %H:%M CST')}")
@@ -74,11 +88,11 @@ def main():
             if (time.time() - last_ts) < 4 * 86400:
                 need_full = False
 
-        outputsize = 1300 if need_full else 30
-        print(f"  [{sym}] {'全量' if need_full else '增量'} outputsize={outputsize}", end="", flush=True)
+        range_ = "5y" if need_full else "1mo"
+        print(f"  [{sym}] {'全量' if need_full else '增量'} range={range_}", end="", flush=True)
 
         try:
-            points, currency = fetch_history(sym, outputsize)
+            points, currency = fetch_history(sym, range_)
             if not need_full and old_points:
                 existing_dates = {p["d"] for p in old_points}
                 new_pts = [p for p in points if p["d"] not in existing_dates]
