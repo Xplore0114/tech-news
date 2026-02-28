@@ -71,7 +71,7 @@ def main():
         f.write(_overview(intl, dom, trend, date, total))
         f.write(_panel_intl(render_cards(intl, translate=True)))
         f.write(_panel_dom(render_cards(dom)))
-        f.write(_panel_trend(render_cards(trend)))
+        f.write(_panel_trend(render_cards(trend), trend))
         f.write(_panel_market())
         f.write(_panel_ai())
         f.write(_panel_archive())
@@ -172,6 +172,28 @@ a{{color:inherit;text-decoration:none}}
 .ov-item{{font-size:.82rem;line-height:1.45;color:var(--tx);padding:.25rem 0;border-bottom:1px solid var(--bd2);cursor:pointer;transition:color .15s}}
 .ov-item:last-child{{border-bottom:none}}
 .ov-item:hover{{color:var(--ac)}}
+/* 热点排行 */
+.ov-rank-list{{display:flex;flex-direction:column;gap:.3rem}}
+.ov-rank-item{{display:flex;align-items:flex-start;gap:.5rem;padding:.25rem 0;border-bottom:1px solid var(--bd2);text-decoration:none;color:inherit;transition:color .15s}}
+.ov-rank-item:last-child{{border-bottom:none}}
+.ov-rank-item:hover .ov-rank-title{{color:var(--ac)}}
+.ov-rank-num{{font-size:.75rem;font-weight:800;min-width:1.2rem;flex-shrink:0;padding-top:.1rem;color:var(--mu)}}
+.ov-rank-num.r1{{color:var(--rd)}}.ov-rank-num.r2{{color:var(--yw)}}.ov-rank-num.r3{{color:var(--ac)}}
+.ov-rank-title{{font-size:.82rem;line-height:1.45;color:var(--tx)}}
+/* 热点面板排行榜 */
+.trend-layout{{display:grid;grid-template-columns:360px 1fr;gap:1.5rem;align-items:start}}
+.trend-rank-box{{background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:1rem;position:sticky;top:60px}}
+.trend-rank-title{{font-size:.82rem;font-weight:700;color:var(--mu);margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--bd2)}}
+.trend-cards-box{{min-width:0}}
+.rank-list{{display:flex;flex-direction:column;gap:.2rem}}
+.rank-item{{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .4rem;border-radius:6px;text-decoration:none;color:inherit;transition:background .15s}}
+.rank-item:hover{{background:var(--hv2)}}
+.rank-num{{font-size:.85rem;font-weight:800;min-width:1.5rem;flex-shrink:0;padding-top:.1rem;color:var(--mu)}}
+.rank-num.r1{{color:var(--rd);font-size:1rem}}.rank-num.r2{{color:var(--yw);font-size:.95rem}}.rank-num.r3{{color:var(--ac)}}
+.rank-content{{flex:1;min-width:0}}
+.rank-title{{font-size:.88rem;font-weight:600;line-height:1.5;color:var(--tx);display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}}
+.rank-score{{font-size:.68rem;color:var(--mu);font-weight:400}}
+.rank-desc{{font-size:.75rem;color:var(--mu);line-height:1.4;margin-top:.2rem;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}}
 .stat-row{{display:flex;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap}}
 .stat-card{{background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:.9rem 1.2rem;flex:1;min-width:120px}}
 .stat-num{{font-size:1.6rem;font-weight:800;color:var(--ac)}}
@@ -195,12 +217,17 @@ a{{color:inherit;text-decoration:none}}
 .market-ts{{font-size:.75rem;color:var(--mu);margin-bottom:1rem;display:flex;align-items:center;gap:.8rem}}
 .market-ts a{{color:var(--ac)}}
 
-/* ── 归档 ── */
-.archive-list{{display:flex;flex-direction:column;gap:.6rem;max-width:600px}}
-.arc-item{{display:flex;justify-content:space-between;align-items:center;background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:.75rem 1rem;cursor:pointer;transition:background .15s,border-color .15s}}
-.arc-item:hover{{background:var(--hv);border-color:var(--ac)}}
-.arc-date{{font-weight:600;font-size:.88rem}}
-.arc-count{{font-size:.78rem;color:var(--mu)}}
+/* ── 归档热力图 ── */
+.archive-list{{display:flex;flex-direction:column;gap:1.5rem;max-width:900px}}
+.arc-month{{background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:1rem}}
+.arc-month-label{{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.8rem}}
+.arc-year{{font-size:.72rem;color:var(--mu);font-weight:400}}
+.arc-month-name{{font-size:1rem;font-weight:800;color:var(--tx)}}
+.arc-heatmap{{display:flex;flex-wrap:wrap;gap:4px}}
+.arc-day{{width:28px;height:28px;border-radius:4px;background:var(--bd2);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--mu);transition:all .15s}}
+.arc-day.has-data{{background:rgba(88,166,255,.25);color:var(--ac);cursor:pointer;font-weight:700}}
+.arc-day.has-data:hover{{background:var(--ac);color:#000}}
+.arc-day-num{{line-height:1}}
 
 /* ── 模态框 ── */
 .ov-modal{{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;overflow-y:auto;padding:2rem 1rem}}
@@ -215,12 +242,13 @@ footer{{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-t
 
 /* ── 天气组件 ── */
 .weather-bar{{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}}
-.weather-city{{display:flex;flex-direction:column;gap:.1rem;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.18);border-radius:6px;padding:.3rem .6rem;min-width:110px}}
+.weather-city{{display:flex;flex-direction:column;gap:.1rem;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.18);border-radius:6px;padding:.3rem .7rem;min-width:130px}}
 .weather-city-name{{font-size:.65rem;color:var(--mu);font-weight:700;letter-spacing:.04em}}
 .weather-days{{display:flex;gap:.5rem}}
 .weather-day{{display:flex;flex-direction:column;align-items:center;gap:.05rem}}
 .weather-day-label{{font-size:.6rem;color:var(--mu)}}
 .weather-icon{{font-size:.9rem;line-height:1}}
+.weather-desc{{font-size:.6rem;color:var(--mu);white-space:nowrap}}
 .weather-temp{{font-size:.7rem;color:var(--tx);font-weight:600;white-space:nowrap}}
 .weather-loading{{font-size:.72rem;color:var(--mu)}}
 
@@ -343,19 +371,33 @@ def _nav():
     <div class="nav-tab" onclick="switchTab('market',this)">&#128200; 行情</div>
     <div class="nav-tab" onclick="switchTab('ai',this)">&#129302; AI资讯</div>
     <div class="nav-tab" onclick="switchTab('archive',this)">&#128218; 归档</div>
-    <div class="nav-tab" onclick="openDailyReport()" style="color:var(--pu)">&#128203; 今日日报</div>
   </div>
 </nav>
 <main class="site-main">"""
 
 
 def _overview(intl, dom, trend, date, total):
-    def top3(items):
+    def top5_list(items):
         html = ""
         for i, item in enumerate(items[:5]):
             title = esc(item.get("title",""))
             url   = esc(item.get("url","#"))
             html += f'<a class="ov-item" href="{url}" target="_blank" rel="noopener">{title}</a>'
+        return html or '<div class="empty">暂无数据</div>'
+
+    def trend_rank(items):
+        """热点排行榜，带排名序号"""
+        html = ""
+        for i, item in enumerate(items[:5]):
+            title = esc(item.get("title",""))
+            url   = esc(item.get("url","#"))
+            rank_cls = f"r{i+1}" if i < 3 else ""
+            html += (
+                f'<a class="ov-rank-item" href="{url}" target="_blank" rel="noopener">'
+                f'<span class="ov-rank-num {rank_cls}">{i+1}</span>'
+                f'<span class="ov-rank-title">{title}</span>'
+                f'</a>'
+            )
         return html or '<div class="empty">暂无数据</div>'
 
     intl_count  = len(intl)
@@ -372,16 +414,29 @@ def _overview(intl, dom, trend, date, total):
   </div>
   <div class="overview-grid">
     <div class="ov-block">
+      <div class="ov-block-title">&#128293; 热点 TOP5 <span class="section-more" onclick="switchTabByName('trend')">查看全部 &rsaquo;</span></div>
+      <div class="ov-rank-list">{trend_rank(trend)}</div>
+    </div>
+    <div class="ov-block">
       <div class="ov-block-title">&#127760; 国际 TOP5 <span class="section-more" onclick="switchTabByName('intl')">查看全部 &rsaquo;</span></div>
-      <div class="ov-list">{top3(intl)}</div>
+      <div class="ov-list">{top5_list(intl)}</div>
     </div>
     <div class="ov-block">
       <div class="ov-block-title">&#127464;&#127475; 国内 TOP5 <span class="section-more" onclick="switchTabByName('dom')">查看全部 &rsaquo;</span></div>
-      <div class="ov-list">{top3(dom)}</div>
+      <div class="ov-list">{top5_list(dom)}</div>
     </div>
-    <div class="ov-block">
-      <div class="ov-block-title">&#128293; 热点 TOP5 <span class="section-more" onclick="switchTabByName('trend')">查看全部 &rsaquo;</span></div>
-      <div class="ov-list">{top3(trend)}</div>
+  </div>
+  <div class="overview-grid" style="grid-template-columns:1fr 1fr;margin-bottom:1.5rem">
+    <div class="ov-block ov-daily-card" onclick="openDailyReport()" style="cursor:pointer;border-color:rgba(188,140,255,.3);background:rgba(188,140,255,.05)">
+      <div class="ov-block-title" style="color:var(--pu)">&#128203; 今日日报 <span style="margin-left:auto;font-size:.72rem;color:var(--pu)">点击查看 &rsaquo;</span></div>
+      <div style="font-size:.8rem;color:var(--mu);line-height:1.6">
+        汇总今日国际、国内、热点资讯<br>
+        <span style="color:var(--pu);font-weight:600">{date} · {total} 条</span>
+      </div>
+    </div>
+    <div class="ov-block" style="border-color:rgba(88,166,255,.2)">
+      <div class="ov-block-title">&#129302; AI 资讯速览 <span class="section-more" onclick="switchTabByName('ai')">查看全部 &rsaquo;</span></div>
+      <div id="ov-ai-preview" style="font-size:.78rem;color:var(--mu)">加载中...</div>
     </div>
   </div>
   <div class="section-title">&#128200; 行情速览 <span class="section-more" onclick="switchTabByName('market')">查看全部 &rsaquo;</span></div>
@@ -418,11 +473,39 @@ def _panel_dom(cards_html):
 </div>"""
 
 
-def _panel_trend(cards_html):
+def _panel_trend(cards_html, trend_items=None):
+    # 排行榜（前10条）
+    rank_html = ""
+    if trend_items:
+        for i, item in enumerate(trend_items[:10]):
+            title = esc(item.get("title",""))
+            url   = esc(item.get("url","#"))
+            desc  = esc(item.get("desc",""))[:60]
+            score = item.get("score", 0)
+            rank_cls = f"r{i+1}" if i < 3 else ""
+            score_html = f'<span class="rank-score">{int(score):,}</span>' if score else ""
+            desc_html  = f'<div class="rank-desc">{desc}</div>' if desc else ""
+            rank_html += (
+                f'<a class="rank-item" href="{url}" target="_blank" rel="noopener">'
+                f'<span class="rank-num {rank_cls}">{i+1}</span>'
+                f'<div class="rank-content">'
+                f'<div class="rank-title">{title}{score_html}</div>'
+                f'{desc_html}'
+                f'</div></a>'
+            )
     return f"""
 <div id="trend" class="panel">
   <div class="section-title">&#128293; 实时热点</div>
-  <div class="cards">{cards_html}</div>
+  <div class="trend-layout">
+    <div class="trend-rank-box">
+      <div class="trend-rank-title">&#127942; 热搜排行榜 TOP10</div>
+      <div class="rank-list">{rank_html or '<div class="empty">暂无数据</div>'}</div>
+    </div>
+    <div class="trend-cards-box">
+      <div class="trend-rank-title">&#128240; 全部热点</div>
+      <div class="cards">{cards_html}</div>
+    </div>
+  </div>
 </div>"""
 
 
@@ -449,6 +532,12 @@ def _panel_market():
     <div class="section-title">&#129351; 贵金属</div>
     <div class="market-grid" id="mg-metal">
       <div class="skel"></div><div class="skel"></div>
+    </div>
+  </div>
+  <div class="market-section">
+    <div class="section-title">&#9878; 有色金属龙头</div>
+    <div class="market-grid" id="mg-nonferrous">
+      <div class="skel"></div><div class="skel"></div><div class="skel"></div>
     </div>
   </div>
   <p style="color:var(--mu);font-size:.73rem;margin-top:.5rem">数据来源：Finnhub &nbsp;·&nbsp; 延迟约15分钟 &nbsp;·&nbsp; 每5分钟自动刷新</p>
@@ -581,6 +670,13 @@ const MARKET = {{
     {{s:"OANDA:XAU_USD",n:"黄金",unit:"oz",cur:"USD"}},
     {{s:"OANDA:XAG_USD",n:"白银",unit:"oz",cur:"USD"}},
   ],
+  nonferrous: [
+    {{s:"FCX",n:"自由港铜业",cur:"USD"}},
+    {{s:"AA",n:"美国铝业",cur:"USD"}},
+    {{s:"NEM",n:"纽蒙特(金矿)",cur:"USD"}},
+    {{s:"VALE",n:"淡水河谷(铁矿)",cur:"USD"}},
+    {{s:"RIO",n:"力拓集团",cur:"USD"}},
+  ],
 }};
 
 // ── Tab 切换 ──
@@ -639,13 +735,14 @@ function mCard(name, sym, extra, q, cur) {{
 
 async function loadMarket(force) {{
   if (marketLoaded && !force) return;
-  const all = [...MARKET.us, ...MARKET.cn, ...MARKET.metal];
+  const all = [...MARKET.us, ...MARKET.cn, ...MARKET.metal, ...MARKET.nonferrous];
   const results = await Promise.allSettled(all.map(x => fetchQuote(x.s)));
   const map = {{}};
   all.forEach((x, i) => {{ map[x.s] = results[i].status === 'fulfilled' ? results[i].value : null; }});
-  document.getElementById('mg-us').innerHTML    = MARKET.us.map(x    => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
-  document.getElementById('mg-cn').innerHTML    = MARKET.cn.map(x    => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
-  document.getElementById('mg-metal').innerHTML = MARKET.metal.map(x => mCard('🥇 '+x.n, x.s, ' / '+x.unit, map[x.s], x.cur)).join('');
+  document.getElementById('mg-us').innerHTML         = MARKET.us.map(x => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
+  document.getElementById('mg-cn').innerHTML         = MARKET.cn.map(x => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
+  document.getElementById('mg-metal').innerHTML      = MARKET.metal.map(x => mCard('🥇 '+x.n, x.s, ' / '+(x.unit||''), map[x.s], x.cur)).join('');
+  document.getElementById('mg-nonferrous').innerHTML = MARKET.nonferrous.map(x => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
   const now = new Date().toLocaleTimeString('zh-CN', {{hour:'2-digit',minute:'2-digit'}});
   document.getElementById('market-ts').innerHTML = `<span>行情更新于 ${{now}}（延迟约15分钟）</span><a href="#" onclick="loadMarket(true);return false">↻ 刷新</a>`;
   marketLoaded = true;
@@ -665,15 +762,61 @@ async function loadOverviewMarket() {{
   ovMarketLoaded = true;
 }}
 
-// ── 归档 ──
+async function loadOvAIPreview() {{
+  const el = document.getElementById('ov-ai-preview');
+  if (!el) return;
+  try {{
+    const r = await fetch('data/ai_news.json?t=' + Date.now());
+    if (!r.ok) throw new Error('no data');
+    const d = await r.json();
+    const items = (d.items || []).slice(0, 4);
+    if (!items.length) {{ el.textContent = '暂无数据'; return; }}
+    el.innerHTML = items.map(x => {{
+      const t = (x.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return `<a href="${{x.url}}" target="_blank" rel="noopener" style="display:block;padding:.2rem 0;border-bottom:1px solid var(--bd2);color:var(--tx);font-size:.78rem;line-height:1.4;transition:color .15s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--tx)'">`
+        + `<span style="color:var(--mu);font-size:.68rem">${{x.source||''}} · ${{x.date||''}}</span><br>${{t}}</a>`;
+    }}).join('') + `<div style="margin-top:.4rem;font-size:.72rem;color:var(--mu)">${{d.total||0}} 篇 · 近2月</div>`;
+  }} catch(e) {{
+    el.textContent = '暂无数据';
+  }}
+}}
+
+// ── 归档热力图 ──
 function renderArchive() {{
   const el = document.getElementById('archive-list');
   if (!HISTORY.length) {{ el.innerHTML = '<div class="empty">暂无历史记录</div>'; return; }}
-  el.innerHTML = HISTORY.map(h =>
-    `<div class="arc-item" onclick="loadHistory('${{h.file}}','${{h.date}}')">
-      <span class="arc-date">📅 ${{h.date}}</span>
-      <span class="arc-count">${{h.total}} 条 ›</span>
-    </div>`).join('');
+
+  // 按年月分组
+  const byMonth = {{}};
+  HISTORY.forEach(h => {{
+    const [y, m] = h.date.split('-');
+    const key = y + '-' + m;
+    if (!byMonth[key]) byMonth[key] = {{ year: y, month: m, days: {{}} }};
+    byMonth[key].days[h.date] = h;
+  }});
+
+  const months = Object.keys(byMonth).sort((a,b) => b.localeCompare(a));
+  let html = '';
+  for (const mk of months) {{
+    const {{ year, month, days }} = byMonth[mk];
+    const monthNames = ['','一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+    const mLabel = monthNames[parseInt(month)] || month + '月';
+    html += `<div class="arc-month">
+      <div class="arc-month-label"><span class="arc-year">${{year}}</span><span class="arc-month-name">${{mLabel}}</span></div>
+      <div class="arc-heatmap">`;
+    // 生成该月所有天
+    const daysInMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {{
+      const dateStr = year + '-' + month + '-' + String(d).padStart(2,'0');
+      const entry = days[dateStr];
+      const cls = entry ? 'arc-day has-data' : 'arc-day';
+      const title = entry ? `${{dateStr}} · ${{entry.total}}条` : dateStr;
+      const onclick = entry ? `onclick="loadHistory('${{entry.file}}','${{entry.date}}')"` : '';
+      html += `<div class="${{cls}}" title="${{title}}" ${{onclick}}><span class="arc-day-num">${{d}}</span></div>`;
+    }}
+    html += '</div></div>';
+  }}
+  el.innerHTML = html;
 }}
 
 function loadHistory(file, date) {{
@@ -719,6 +862,7 @@ document.getElementById('modal').addEventListener('click', e => {{ if (e.target 
 
 // 首页默认加载速览行情，记录自动更新时间
 loadOverviewMarket().then(() => setLastUpdated('auto')).catch(() => setLastUpdated('auto'));
+loadOvAIPreview();
 
 // ── 天气 ──
 const WEATHER_CITIES = [
@@ -731,34 +875,64 @@ const WEATHER_ICONS = {{
   71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',
   95:'⛈️',96:'⛈️',99:'⛈️',
 }};
+const WEATHER_DESC = {{
+  0:'晴',1:'晴间多云',2:'多云',3:'阴',45:'雾',48:'雾凇',
+  51:'小毛毛雨',53:'毛毛雨',55:'大毛毛雨',61:'小雨',63:'中雨',65:'大雨',
+  71:'小雪',73:'中雪',75:'大雪',80:'阵雨',81:'中阵雨',82:'强阵雨',
+  95:'雷阵雨',96:'雷阵雨夹冰雹',99:'强雷阵雨',
+}};
 function wIcon(code){{ return WEATHER_ICONS[code] || '🌡️'; }}
+function wDesc(code){{ return WEATHER_DESC[code] || ''; }}
 
 async function loadWeather() {{
   const bar = document.getElementById('weather-bar');
   try {{
     const results = await Promise.all(WEATHER_CITIES.map(async city => {{
+      // past_days=1 获取昨天，forecast_days=3 获取今明后
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${{city.lat}}&longitude=${{city.lon}}`
-        + `&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai&forecast_days=2`;
+        + `&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai&past_days=1&forecast_days=3`;
       const r = await fetch(url);
       if (!r.ok) throw new Error('weather fetch failed');
       const d = await r.json();
       return {{ city: city.name, daily: d.daily }};
     }}));
     bar.innerHTML = results.map(({{ city, daily }}) => {{
-      const days = [0,1].map(i => {{
-        const label = i === 0 ? '今天' : '明天';
-        const icon  = wIcon(daily.weathercode[i]);
-        const hi    = Math.round(daily.temperature_2m_max[i]);
-        const lo    = Math.round(daily.temperature_2m_min[i]);
+      // daily 数组: [昨天, 今天, 明天, 后天]
+      const labels = ['昨天','今天','明天'];
+      const days = [0,1,2].map(i => {{
+        const code = daily.weathercode[i];
+        const icon = wIcon(code);
+        const desc = wDesc(code);
+        const hi   = Math.round(daily.temperature_2m_max[i]);
+        const lo   = Math.round(daily.temperature_2m_min[i]);
         return `<div class="weather-day">
-          <span class="weather-day-label">${{label}}</span>
+          <span class="weather-day-label">${{labels[i]}}</span>
           <span class="weather-icon">${{icon}}</span>
+          <span class="weather-desc">${{desc}}</span>
           <span class="weather-temp">${{lo}}°~${{hi}}°</span>
         </div>`;
       }}).join('');
+      // 折线图：3天最高温趋势（SVG mini）
+      const highs = [0,1,2].map(i => Math.round(daily.temperature_2m_max[i]));
+      const lows  = [0,1,2].map(i => Math.round(daily.temperature_2m_min[i]));
+      const allTemps = [...highs, ...lows];
+      const tMin = Math.min(...allTemps) - 2, tMax = Math.max(...allTemps) + 2;
+      const tRange = tMax - tMin || 1;
+      const W = 72, H = 28;
+      function tx(i) {{ return Math.round(i * W / 2); }}
+      function ty(t) {{ return Math.round(H - (t - tMin) / tRange * H); }}
+      const hiPts = highs.map((t,i) => `${{tx(i)}},${{ty(t)}}`).join(' ');
+      const loPts = lows.map((t,i)  => `${{tx(i)}},${{ty(t)}}`).join(' ');
+      const sparkline = `<svg width="${{W}}" height="${{H}}" style="overflow:visible;margin-top:.3rem">
+        <polyline points="${{hiPts}}" fill="none" stroke="#f85149" stroke-width="1.5" stroke-linejoin="round"/>
+        <polyline points="${{loPts}}" fill="none" stroke="#58a6ff" stroke-width="1.5" stroke-linejoin="round"/>
+        ${{highs.map((t,i) => `<circle cx="${{tx(i)}}" cy="${{ty(t)}}" r="2" fill="#f85149"/>`).join('')}}
+        ${{lows.map((t,i)  => `<circle cx="${{tx(i)}}" cy="${{ty(t)}}" r="2" fill="#58a6ff"/>`).join('')}}
+      </svg>`;
       return `<div class="weather-city">
         <span class="weather-city-name">📍 ${{city}}</span>
         <div class="weather-days">${{days}}</div>
+        ${{sparkline}}
       </div>`;
     }}).join('');
   }} catch(e) {{

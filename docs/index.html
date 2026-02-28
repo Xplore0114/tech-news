@@ -88,6 +88,28 @@ a{color:inherit;text-decoration:none}
 .ov-item{font-size:.82rem;line-height:1.45;color:var(--tx);padding:.25rem 0;border-bottom:1px solid var(--bd2);cursor:pointer;transition:color .15s}
 .ov-item:last-child{border-bottom:none}
 .ov-item:hover{color:var(--ac)}
+/* 热点排行 */
+.ov-rank-list{display:flex;flex-direction:column;gap:.3rem}
+.ov-rank-item{display:flex;align-items:flex-start;gap:.5rem;padding:.25rem 0;border-bottom:1px solid var(--bd2);text-decoration:none;color:inherit;transition:color .15s}
+.ov-rank-item:last-child{border-bottom:none}
+.ov-rank-item:hover .ov-rank-title{color:var(--ac)}
+.ov-rank-num{font-size:.75rem;font-weight:800;min-width:1.2rem;flex-shrink:0;padding-top:.1rem;color:var(--mu)}
+.ov-rank-num.r1{color:var(--rd)}.ov-rank-num.r2{color:var(--yw)}.ov-rank-num.r3{color:var(--ac)}
+.ov-rank-title{font-size:.82rem;line-height:1.45;color:var(--tx)}
+/* 热点面板排行榜 */
+.trend-layout{display:grid;grid-template-columns:360px 1fr;gap:1.5rem;align-items:start}
+.trend-rank-box{background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:1rem;position:sticky;top:60px}
+.trend-rank-title{font-size:.82rem;font-weight:700;color:var(--mu);margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--bd2)}
+.trend-cards-box{min-width:0}
+.rank-list{display:flex;flex-direction:column;gap:.2rem}
+.rank-item{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .4rem;border-radius:6px;text-decoration:none;color:inherit;transition:background .15s}
+.rank-item:hover{background:var(--hv2)}
+.rank-num{font-size:.85rem;font-weight:800;min-width:1.5rem;flex-shrink:0;padding-top:.1rem;color:var(--mu)}
+.rank-num.r1{color:var(--rd);font-size:1rem}.rank-num.r2{color:var(--yw);font-size:.95rem}.rank-num.r3{color:var(--ac)}
+.rank-content{flex:1;min-width:0}
+.rank-title{font-size:.88rem;font-weight:600;line-height:1.5;color:var(--tx);display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.rank-score{font-size:.68rem;color:var(--mu);font-weight:400}
+.rank-desc{font-size:.75rem;color:var(--mu);line-height:1.4;margin-top:.2rem;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 .stat-row{display:flex;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
 .stat-card{background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:.9rem 1.2rem;flex:1;min-width:120px}
 .stat-num{font-size:1.6rem;font-weight:800;color:var(--ac)}
@@ -111,12 +133,17 @@ a{color:inherit;text-decoration:none}
 .market-ts{font-size:.75rem;color:var(--mu);margin-bottom:1rem;display:flex;align-items:center;gap:.8rem}
 .market-ts a{color:var(--ac)}
 
-/* ── 归档 ── */
-.archive-list{display:flex;flex-direction:column;gap:.6rem;max-width:600px}
-.arc-item{display:flex;justify-content:space-between;align-items:center;background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:.75rem 1rem;cursor:pointer;transition:background .15s,border-color .15s}
-.arc-item:hover{background:var(--hv);border-color:var(--ac)}
-.arc-date{font-weight:600;font-size:.88rem}
-.arc-count{font-size:.78rem;color:var(--mu)}
+/* ── 归档热力图 ── */
+.archive-list{display:flex;flex-direction:column;gap:1.5rem;max-width:900px}
+.arc-month{background:var(--sf);border:1px solid var(--bd2);border-radius:8px;padding:1rem}
+.arc-month-label{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.8rem}
+.arc-year{font-size:.72rem;color:var(--mu);font-weight:400}
+.arc-month-name{font-size:1rem;font-weight:800;color:var(--tx)}
+.arc-heatmap{display:flex;flex-wrap:wrap;gap:4px}
+.arc-day{width:28px;height:28px;border-radius:4px;background:var(--bd2);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--mu);transition:all .15s}
+.arc-day.has-data{background:rgba(88,166,255,.25);color:var(--ac);cursor:pointer;font-weight:700}
+.arc-day.has-data:hover{background:var(--ac);color:#000}
+.arc-day-num{line-height:1}
 
 /* ── 模态框 ── */
 .ov-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;overflow-y:auto;padding:2rem 1rem}
@@ -131,12 +158,13 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
 
 /* ── 天气组件 ── */
 .weather-bar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
-.weather-city{display:flex;flex-direction:column;gap:.1rem;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.18);border-radius:6px;padding:.3rem .6rem;min-width:110px}
+.weather-city{display:flex;flex-direction:column;gap:.1rem;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.18);border-radius:6px;padding:.3rem .7rem;min-width:130px}
 .weather-city-name{font-size:.65rem;color:var(--mu);font-weight:700;letter-spacing:.04em}
 .weather-days{display:flex;gap:.5rem}
 .weather-day{display:flex;flex-direction:column;align-items:center;gap:.05rem}
 .weather-day-label{font-size:.6rem;color:var(--mu)}
 .weather-icon{font-size:.9rem;line-height:1}
+.weather-desc{font-size:.6rem;color:var(--mu);white-space:nowrap}
 .weather-temp{font-size:.7rem;color:var(--tx);font-weight:600;white-space:nowrap}
 .weather-loading{font-size:.72rem;color:var(--mu)}
 
@@ -255,7 +283,6 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
     <div class="nav-tab" onclick="switchTab('market',this)">&#128200; 行情</div>
     <div class="nav-tab" onclick="switchTab('ai',this)">&#129302; AI资讯</div>
     <div class="nav-tab" onclick="switchTab('archive',this)">&#128218; 归档</div>
-    <div class="nav-tab" onclick="openDailyReport()" style="color:var(--pu)">&#128203; 今日日报</div>
   </div>
 </nav>
 <main class="site-main">
@@ -268,6 +295,10 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
   </div>
   <div class="overview-grid">
     <div class="ov-block">
+      <div class="ov-block-title">&#128293; 热点 TOP5 <span class="section-more" onclick="switchTabByName('trend')">查看全部 &rsaquo;</span></div>
+      <div class="ov-rank-list"><a class="ov-rank-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E6%91%A7%E6%AF%81%E7%BE%8E%E5%86%9B%E9%9B%B7%E8%BE%BE&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="ov-rank-num r1">1</span><span class="ov-rank-title">伊朗摧毁美军雷达</span></a><a class="ov-rank-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%EF%BC%9A%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB%E5%B7%B2%E8%87%B4%E7%BA%A6200%E5%90%8D%E7%BE%8E%E5%86%9B%E4%BC%A4%E4%BA%A1&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="ov-rank-num r2">2</span><span class="ov-rank-title">伊朗：导弹袭击已致约200名美军伤亡</span></a><a class="ov-rank-item" href="https://www.baidu.com/s?wd=%E8%BF%99%E4%BA%9B%E5%B0%8F%E5%9F%8E%E4%B8%BA%E4%BD%95%E6%88%90%E4%BA%86%E6%98%A5%E8%8A%82%E7%83%AD%E9%97%A8%E6%97%85%E6%B8%B8%E5%9C%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="ov-rank-num r3">3</span><span class="ov-rank-title">这些小城为何成了春节热门旅游地</span></a><a class="ov-rank-item" href="https://www.baidu.com/s?wd=%E4%BA%94%E7%B2%AE%E6%B6%B2%E9%9B%86%E5%9B%A2%E8%91%A3%E4%BA%8B%E9%95%BF%E6%9B%BE%E4%BB%8E%E9%92%A6%E8%A2%AB%E6%9F%A5&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="ov-rank-num ">4</span><span class="ov-rank-title">五粮液集团董事长曾从钦被查</span></a><a class="ov-rank-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E4%B8%80%E5%AD%A6%E6%A0%A1%E9%81%AD%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB+%E5%B7%B2%E8%87%B451%E6%AD%BB60%E4%BC%A4&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="ov-rank-num ">5</span><span class="ov-rank-title">伊朗一学校遭导弹袭击 已致51死60伤</span></a></div>
+    </div>
+    <div class="ov-block">
       <div class="ov-block-title">&#127760; 国际 TOP5 <span class="section-more" onclick="switchTabByName('intl')">查看全部 &rsaquo;</span></div>
       <div class="ov-list"><a class="ov-item" href="https://github.com/moeru-ai/airi" target="_blank" rel="noopener">moeru-ai / airi</a><a class="ov-item" href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener">anthropics / claude-code</a><a class="ov-item" href="https://github.com/tukaani-project/xz" target="_blank" rel="noopener">tukaani-project / xz</a><a class="ov-item" href="https://github.com/Shubhamsaboo/awesome-llm-apps" target="_blank" rel="noopener">Shubhamsaboo / awesome-llm-apps</a><a class="ov-item" href="https://github.com/ruvnet/ruflo" target="_blank" rel="noopener">ruvnet / ruflo</a></div>
     </div>
@@ -275,9 +306,18 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
       <div class="ov-block-title">&#127464;&#127475; 国内 TOP5 <span class="section-more" onclick="switchTabByName('dom')">查看全部 &rsaquo;</span></div>
       <div class="ov-list"><a class="ov-item" href="https://juejin.cn/post/7610979696307601417" target="_blank" rel="noopener">为什么我推荐前端项目都应该使用 TanStack Query 管理接口请求</a><a class="ov-item" href="https://juejin.cn/post/7599496293161762857" target="_blank" rel="noopener">THREE.js 3D智慧车站数字孪生项目</a><a class="ov-item" href="https://juejin.cn/post/7588124225702363176" target="_blank" rel="noopener">前端已死？我用 Trae + Gemini 零代码手搓 3D 塔罗牌，找到了新出路</a><a class="ov-item" href="https://juejin.cn/post/7577691061034172462" target="_blank" rel="noopener">为什么 SVG 能在现代前端中胜出？</a><a class="ov-item" href="https://juejin.cn/post/7573972055268720678" target="_blank" rel="noopener">JS 对象：从 “散装” 到 “精装” 的晋级之路</a></div>
     </div>
-    <div class="ov-block">
-      <div class="ov-block-title">&#128293; 热点 TOP5 <span class="section-more" onclick="switchTabByName('trend')">查看全部 &rsaquo;</span></div>
-      <div class="ov-list"><a class="ov-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E6%91%A7%E6%AF%81%E7%BE%8E%E5%86%9B%E9%9B%B7%E8%BE%BE&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener">伊朗摧毁美军雷达</a><a class="ov-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%EF%BC%9A%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB%E5%B7%B2%E8%87%B4%E7%BA%A6200%E5%90%8D%E7%BE%8E%E5%86%9B%E4%BC%A4%E4%BA%A1&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener">伊朗：导弹袭击已致约200名美军伤亡</a><a class="ov-item" href="https://www.baidu.com/s?wd=%E8%BF%99%E4%BA%9B%E5%B0%8F%E5%9F%8E%E4%B8%BA%E4%BD%95%E6%88%90%E4%BA%86%E6%98%A5%E8%8A%82%E7%83%AD%E9%97%A8%E6%97%85%E6%B8%B8%E5%9C%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener">这些小城为何成了春节热门旅游地</a><a class="ov-item" href="https://www.baidu.com/s?wd=%E4%BA%94%E7%B2%AE%E6%B6%B2%E9%9B%86%E5%9B%A2%E8%91%A3%E4%BA%8B%E9%95%BF%E6%9B%BE%E4%BB%8E%E9%92%A6%E8%A2%AB%E6%9F%A5&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener">五粮液集团董事长曾从钦被查</a><a class="ov-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E4%B8%80%E5%AD%A6%E6%A0%A1%E9%81%AD%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB+%E5%B7%B2%E8%87%B451%E6%AD%BB60%E4%BC%A4&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener">伊朗一学校遭导弹袭击 已致51死60伤</a></div>
+  </div>
+  <div class="overview-grid" style="grid-template-columns:1fr 1fr;margin-bottom:1.5rem">
+    <div class="ov-block ov-daily-card" onclick="openDailyReport()" style="cursor:pointer;border-color:rgba(188,140,255,.3);background:rgba(188,140,255,.05)">
+      <div class="ov-block-title" style="color:var(--pu)">&#128203; 今日日报 <span style="margin-left:auto;font-size:.72rem;color:var(--pu)">点击查看 &rsaquo;</span></div>
+      <div style="font-size:.8rem;color:var(--mu);line-height:1.6">
+        汇总今日国际、国内、热点资讯<br>
+        <span style="color:var(--pu);font-weight:600">2026-02-28 · 55 条</span>
+      </div>
+    </div>
+    <div class="ov-block" style="border-color:rgba(88,166,255,.2)">
+      <div class="ov-block-title">&#129302; AI 资讯速览 <span class="section-more" onclick="switchTabByName('ai')">查看全部 &rsaquo;</span></div>
+      <div id="ov-ai-preview" style="font-size:.78rem;color:var(--mu)">加载中...</div>
     </div>
   </div>
   <div class="section-title">&#128200; 行情速览 <span class="section-more" onclick="switchTabByName('market')">查看全部 &rsaquo;</span></div>
@@ -306,7 +346,16 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
 </div>
 <div id="trend" class="panel">
   <div class="section-title">&#128293; 实时热点</div>
-  <div class="cards"><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E6%91%A7%E6%AF%81%E7%BE%8E%E5%86%9B%E9%9B%B7%E8%BE%BE&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7809290</span></div><div class="card-title">伊朗摧毁美军雷达</div><div class="card-zh" style="display:none"></div><p class="desc">当地时间28日下午，伊朗伊斯兰革命卫队公共关系部称，位于卡塔尔、探测距离达5000公里的美国FP132雷达以及用于追踪弹道导弹的相关设备，已被彻底摧毁。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%EF%BC%9A%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB%E5%B7%B2%E8%87%B4%E7%BA%A6200%E5%90%8D%E7%BE%8E%E5%86%9B%E4%BC%A4%E4%BA%A1&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7713832</span></div><div class="card-title">伊朗：导弹袭击已致约200名美军伤亡</div><div class="card-zh" style="display:none"></div><p class="desc">当地时间28日下午，伊朗伊斯兰革命卫队公共关系部门称，多枚美以导弹未能实施对目标的打击，而是坠落在伊拉克以及波斯湾地区国家的沙漠和城区。伊朗伊斯兰革命卫队表示，</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E8%BF%99%E4%BA%9B%E5%B0%8F%E5%9F%8E%E4%B8%BA%E4%BD%95%E6%88%90%E4%BA%86%E6%98%A5%E8%8A%82%E7%83%AD%E9%97%A8%E6%97%85%E6%B8%B8%E5%9C%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7617155</span></div><div class="card-title">这些小城为何成了春节热门旅游地</div><div class="card-zh" style="display:none"></div><p class="desc">这个春节，很多人不再执着于热门景区的“人挤人”，转而奔赴文化独特、客流适中、性价比突出的特色小城，国内旅游市场呈现“小众崛起、特色领跑”的新气象。一批民俗与非遗</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BA%94%E7%B2%AE%E6%B6%B2%E9%9B%86%E5%9B%A2%E8%91%A3%E4%BA%8B%E9%95%BF%E6%9B%BE%E4%BB%8E%E9%92%A6%E8%A2%AB%E6%9F%A5&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7520375</span></div><div class="card-title">五粮液集团董事长曾从钦被查</div><div class="card-zh" style="display:none"></div><p class="desc">四川省宜宾五粮液集团有限公司党委书记、董事长，宜宾五粮液股份有限公司党委书记、董事长曾从钦涉嫌严重违纪违法，目前正接受宜宾市纪委监委纪律审查和监察调查。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E4%B8%80%E5%AD%A6%E6%A0%A1%E9%81%AD%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB+%E5%B7%B2%E8%87%B451%E6%AD%BB60%E4%BC%A4&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7425059</span></div><div class="card-title">伊朗一学校遭导弹袭击 已致51死60伤</div><div class="card-zh" style="display:none"></div><p class="desc">28日，伊朗霍尔木兹甘省一所女子小学遭到以色列导弹袭击。截至当天14时45分，该袭击中遇难人数已上升到51人，还有60名学生受伤。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%9B%BD%E9%98%B2%E9%83%A8%EF%BC%9A%E7%BE%8E%E6%98%AF%E5%85%A8%E7%90%83%E6%88%98%E7%95%A5%E7%A8%B3%E5%AE%9A%E6%9C%80%E5%A4%A7%E4%B9%B1%E6%BA%90&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7333355</span></div><div class="card-title">国防部：美是全球战略稳定最大乱源</div><div class="card-zh" style="display:none"></div><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%A5%B3%E5%AD%90%E7%A6%BB%E5%AE%B617%E5%A4%A9%E6%99%BA%E8%83%BD%E9%A9%AC%E6%A1%B6%E7%8B%82%E5%86%B2200%E5%90%A8%E6%B0%B4&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7233168</span></div><div class="card-title">女子离家17天智能马桶狂冲200吨水</div><div class="card-zh" style="display:none"></div><p class="desc">近日，河南洛阳张女士离家17天返程后，被告知家中用水异常。经查是智能马桶断电后故障不停冲水，17天约冲掉200吨水，按4.2元/吨计算，产生840元水费，让她十</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=45~54%E5%B2%81%E6%98%AF%E5%BB%B6%E7%BC%93%E5%A4%A7%E8%84%91%E8%A1%B0%E8%80%81%E2%80%9C%E6%9C%AB%E7%8F%AD%E8%BD%A6%E2%80%9D&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7137746</span></div><div class="card-title">45~54岁是延缓大脑衰老“末班车”</div><div class="card-zh" style="display:none"></div><p class="desc">总觉得这是“老了”的正常现象？其实大错特错！大脑的衰老，比你想象中来得更早。近日，最新研究发现，45~54岁，是延缓大脑衰老的“末班车”。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=B5999%E4%BB%8E%E5%8C%97%E4%BA%AC%E8%B5%B7%E9%A3%9E%E5%90%8E%E7%9B%98%E6%97%8B5%E5%B0%8F%E6%97%B6%E8%BF%94%E8%88%AA&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7043159</span></div><div class="card-title">B5999从北京起飞后盘旋5小时返航</div><div class="card-zh" style="display:none"></div><p class="desc">2月27日，编号B5999的航空医疗救援机从北京首都机场起飞赴布达佩斯，起飞后突发状况返航，在北京市郊上空盘旋5小时耗油减重，随后安全降落，航班取消。该机为中国</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BF%84%E6%96%B9%E5%B0%B1%E7%BE%8E%E4%BB%A5%E8%A2%AD%E5%87%BB%E4%BC%8A%E6%9C%97%E8%A1%A8%E6%80%81&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6949804</span></div><div class="card-title">俄方就美以袭击伊朗表态</div><div class="card-zh" style="display:none"></div><p class="desc">当地时间28日，俄罗斯外交部表示，美国和以色列对伊朗境内目标发动空袭是一起事先策划的、武装侵略一个主权独立的联合国会员国的行为，公然违反国际法基本原则和规范。俄</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%A4%9A%E5%9C%B0%E8%BE%9F%E8%B0%A3%E6%96%B0%E8%83%BD%E6%BA%90%E6%B1%BD%E8%BD%A6%E5%BC%80%E5%BE%81%E9%87%8C%E7%A8%8B%E7%A8%8E&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6852451</span></div><div class="card-title">多地辟谣新能源汽车开征里程税</div><div class="card-zh" style="display:none"></div><p class="desc">近日，网传2026年多省试点征收新能源汽车里程税。经核实，多地税务部门及国税总局均回应称未收到相关通知，此为谣言。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E6%89%93%E5%87%BB%E7%BE%8E%E5%9B%BD%E5%86%9B%E4%BA%8B%E5%9F%BA%E5%9C%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6757711</span></div><div class="card-title">伊朗打击美国军事基地</div><div class="card-zh" style="display:none"></div><p class="desc">据伊朗电视台报道说，伊朗正在打击美国在中东的军事基地。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E9%99%86%E5%86%9B%E7%A7%B0%E5%85%B6%E6%80%BB%E5%8F%B8%E4%BB%A4%E6%97%A0%E6%81%99&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6657569</span></div><div class="card-title">伊朗陆军称其总司令无恙</div><div class="card-zh" style="display:none"></div><p class="desc">当地时间28日，伊朗军队公共关系部宣布，军队总司令哈塔米身体完全健康，正在指挥部队。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E8%AE%AE%E4%BC%9A%E9%AB%98%E5%AE%98%EF%BC%9A%E7%BB%93%E5%B1%80%E5%B7%B2%E4%B8%8D%E5%86%8D%E7%94%B1%E4%BB%A5%E6%8E%8C%E6%8E%A7&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6559345</span></div><div class="card-title">伊朗议会高官：结局已不再由以掌控</div><div class="card-zh" style="display:none"></div><p class="desc">2月28日，伊朗议会国家安全和外交政策委员会主席易卜拉欣·阿齐兹说：“我们（伊朗）警告过你们（以色列），现在你们开启这条道路，结局已不再由你们掌控。”</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%A4%9A%E8%B7%AF%E8%BD%B0%E7%82%B8%E4%BC%8A%E6%9C%97+%E7%BE%8E%E4%BB%A5%E4%B8%8D%E8%A3%85%E4%BA%86&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6478417</span></div><div class="card-title">多路轰炸伊朗 美以不装了</div><div class="card-zh" style="display:none"></div><p class="desc">2月28日，美以对伊朗发动大规模军事打击。专家指出，此前的美伊谈判或为“障眼法”，美以真正目标是推动伊朗政权更迭。特朗普呼吁伊朗民众“接管政府”，内塔尼亚胡证实</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%93%88%E6%A2%85%E5%86%85%E4%BC%8A%E5%B7%B2%E5%A7%94%E4%BB%BB%E6%8E%A5%E7%8F%AD%E8%80%85%E4%BB%A5%E5%BA%94%E5%AF%B9%E6%96%A9%E9%A6%96&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6372364</span></div><div class="card-title">哈梅内伊已委任接班者以应对斩首</div><div class="card-zh" style="display:none"></div><p class="desc">近期，伊朗高级官员、革命卫队成员及前外交官透露，为防范被暗杀，哈梅内伊今年1月已任命前革命卫队指挥官拉里贾尼担任要职，以便在自己遭遇不测后领导国家。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E2%80%9C%E5%A6%82%E6%9E%9C%E6%B4%BB100%E5%B2%81%E8%BF%98%E8%83%BD%E8%A7%81%E4%BD%A010%E5%9B%9E%E2%80%9D&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6285883</span></div><div class="card-title">“如果活100岁还能见你10回”</div><div class="card-zh" style="display:none"></div><p class="desc">2月26日，山西一位90岁奶奶对即将离家的孙子说：“如果我能活100岁，还能见你10回”，90岁奶奶紧紧拽着孙子的行李箱，一句话直接让人破防。网友：见一面少一面</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%9B%BD%E9%98%B2%E9%83%A8%EF%BC%9A%E5%A5%89%E5%8A%9D%E6%97%A5%E6%96%B9%E4%B8%8D%E8%A6%81%E5%BC%80%E5%8E%86%E5%8F%B2%E5%80%92%E8%BD%A6&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6178366</span></div><div class="card-title">国防部：奉劝日方不要开历史倒车</div><div class="card-zh" style="display:none"></div><p class="desc">中国国防部新闻发言人张晓刚28日就近期涉军问题发布消息。他表示，中方奉劝日方不要一意孤行、开历史倒车，否则只会败得更快、输得更惨。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=2025%E5%B9%B4181%E5%90%8D%E4%B8%AD%E7%AE%A1%E5%B9%B2%E9%83%A8%E8%A2%AB%E6%9F%A5&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6094202</span></div><div class="card-title">2025年181名中管干部被查</div><div class="card-zh" style="display:none"></div><p class="desc">二十届中央纪委五次全会工作报告28日全文公布。报告显示，2025年，中央纪委国家监委立案审查调查金湘军、蓝天立、王莉霞、毕井泉、齐扎拉、蒋超良、刘慧、易会满等中</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%B8%AD%E4%B8%9C%E5%A4%9A%E5%9C%B0%E5%93%8D%E8%B5%B7%E7%88%86%E7%82%B8%E5%A3%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 5989660</span></div><div class="card-title">中东多地响起爆炸声</div><div class="card-zh" style="display:none"></div><p class="desc">据中东媒体2月28日报道，美国和以色列对伊朗展开联合军事打击后，中东地区除以色列外，巴林、阿联酋、卡塔尔、沙特阿拉伯、科威特等也响起爆炸声。</p><div class="card-time">21:34</div></a></div>
+  <div class="trend-layout">
+    <div class="trend-rank-box">
+      <div class="trend-rank-title">&#127942; 热搜排行榜 TOP10</div>
+      <div class="rank-list"><a class="rank-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E6%91%A7%E6%AF%81%E7%BE%8E%E5%86%9B%E9%9B%B7%E8%BE%BE&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num r1">1</span><div class="rank-content"><div class="rank-title">伊朗摧毁美军雷达<span class="rank-score">7,809,290</span></div><div class="rank-desc">当地时间28日下午，伊朗伊斯兰革命卫队公共关系部称，位于卡塔尔、探测距离达5000公里的美国FP132雷达以及用于追踪弹</div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%EF%BC%9A%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB%E5%B7%B2%E8%87%B4%E7%BA%A6200%E5%90%8D%E7%BE%8E%E5%86%9B%E4%BC%A4%E4%BA%A1&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num r2">2</span><div class="rank-content"><div class="rank-title">伊朗：导弹袭击已致约200名美军伤亡<span class="rank-score">7,713,832</span></div><div class="rank-desc">当地时间28日下午，伊朗伊斯兰革命卫队公共关系部门称，多枚美以导弹未能实施对目标的打击，而是坠落在伊拉克以及波斯湾地区国</div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=%E8%BF%99%E4%BA%9B%E5%B0%8F%E5%9F%8E%E4%B8%BA%E4%BD%95%E6%88%90%E4%BA%86%E6%98%A5%E8%8A%82%E7%83%AD%E9%97%A8%E6%97%85%E6%B8%B8%E5%9C%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num r3">3</span><div class="rank-content"><div class="rank-title">这些小城为何成了春节热门旅游地<span class="rank-score">7,617,155</span></div><div class="rank-desc">这个春节，很多人不再执着于热门景区的“人挤人”，转而奔赴文化独特、客流适中、性价比突出的特色小城，国内旅游市场呈现“小众</div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=%E4%BA%94%E7%B2%AE%E6%B6%B2%E9%9B%86%E5%9B%A2%E8%91%A3%E4%BA%8B%E9%95%BF%E6%9B%BE%E4%BB%8E%E9%92%A6%E8%A2%AB%E6%9F%A5&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num ">4</span><div class="rank-content"><div class="rank-title">五粮液集团董事长曾从钦被查<span class="rank-score">7,520,375</span></div><div class="rank-desc">四川省宜宾五粮液集团有限公司党委书记、董事长，宜宾五粮液股份有限公司党委书记、董事长曾从钦涉嫌严重违纪违法，目前正接受宜</div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E4%B8%80%E5%AD%A6%E6%A0%A1%E9%81%AD%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB+%E5%B7%B2%E8%87%B451%E6%AD%BB60%E4%BC%A4&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num ">5</span><div class="rank-content"><div class="rank-title">伊朗一学校遭导弹袭击 已致51死60伤<span class="rank-score">7,425,059</span></div><div class="rank-desc">28日，伊朗霍尔木兹甘省一所女子小学遭到以色列导弹袭击。截至当天14时45分，该袭击中遇难人数已上升到51人，还有60名</div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=%E5%9B%BD%E9%98%B2%E9%83%A8%EF%BC%9A%E7%BE%8E%E6%98%AF%E5%85%A8%E7%90%83%E6%88%98%E7%95%A5%E7%A8%B3%E5%AE%9A%E6%9C%80%E5%A4%A7%E4%B9%B1%E6%BA%90&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num ">6</span><div class="rank-content"><div class="rank-title">国防部：美是全球战略稳定最大乱源<span class="rank-score">7,333,355</span></div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=%E5%A5%B3%E5%AD%90%E7%A6%BB%E5%AE%B617%E5%A4%A9%E6%99%BA%E8%83%BD%E9%A9%AC%E6%A1%B6%E7%8B%82%E5%86%B2200%E5%90%A8%E6%B0%B4&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num ">7</span><div class="rank-content"><div class="rank-title">女子离家17天智能马桶狂冲200吨水<span class="rank-score">7,233,168</span></div><div class="rank-desc">近日，河南洛阳张女士离家17天返程后，被告知家中用水异常。经查是智能马桶断电后故障不停冲水，17天约冲掉200吨水，按4</div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=45~54%E5%B2%81%E6%98%AF%E5%BB%B6%E7%BC%93%E5%A4%A7%E8%84%91%E8%A1%B0%E8%80%81%E2%80%9C%E6%9C%AB%E7%8F%AD%E8%BD%A6%E2%80%9D&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num ">8</span><div class="rank-content"><div class="rank-title">45~54岁是延缓大脑衰老“末班车”<span class="rank-score">7,137,746</span></div><div class="rank-desc">总觉得这是“老了”的正常现象？其实大错特错！大脑的衰老，比你想象中来得更早。近日，最新研究发现，45~54岁，是延缓大脑</div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=B5999%E4%BB%8E%E5%8C%97%E4%BA%AC%E8%B5%B7%E9%A3%9E%E5%90%8E%E7%9B%98%E6%97%8B5%E5%B0%8F%E6%97%B6%E8%BF%94%E8%88%AA&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num ">9</span><div class="rank-content"><div class="rank-title">B5999从北京起飞后盘旋5小时返航<span class="rank-score">7,043,159</span></div><div class="rank-desc">2月27日，编号B5999的航空医疗救援机从北京首都机场起飞赴布达佩斯，起飞后突发状况返航，在北京市郊上空盘旋5小时耗油</div></div></a><a class="rank-item" href="https://www.baidu.com/s?wd=%E4%BF%84%E6%96%B9%E5%B0%B1%E7%BE%8E%E4%BB%A5%E8%A2%AD%E5%87%BB%E4%BC%8A%E6%9C%97%E8%A1%A8%E6%80%81&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><span class="rank-num ">10</span><div class="rank-content"><div class="rank-title">俄方就美以袭击伊朗表态<span class="rank-score">6,949,804</span></div><div class="rank-desc">当地时间28日，俄罗斯外交部表示，美国和以色列对伊朗境内目标发动空袭是一起事先策划的、武装侵略一个主权独立的联合国会员国</div></div></a></div>
+    </div>
+    <div class="trend-cards-box">
+      <div class="trend-rank-title">&#128240; 全部热点</div>
+      <div class="cards"><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E6%91%A7%E6%AF%81%E7%BE%8E%E5%86%9B%E9%9B%B7%E8%BE%BE&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7809290</span></div><div class="card-title">伊朗摧毁美军雷达</div><div class="card-zh" style="display:none"></div><p class="desc">当地时间28日下午，伊朗伊斯兰革命卫队公共关系部称，位于卡塔尔、探测距离达5000公里的美国FP132雷达以及用于追踪弹道导弹的相关设备，已被彻底摧毁。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%EF%BC%9A%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB%E5%B7%B2%E8%87%B4%E7%BA%A6200%E5%90%8D%E7%BE%8E%E5%86%9B%E4%BC%A4%E4%BA%A1&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7713832</span></div><div class="card-title">伊朗：导弹袭击已致约200名美军伤亡</div><div class="card-zh" style="display:none"></div><p class="desc">当地时间28日下午，伊朗伊斯兰革命卫队公共关系部门称，多枚美以导弹未能实施对目标的打击，而是坠落在伊拉克以及波斯湾地区国家的沙漠和城区。伊朗伊斯兰革命卫队表示，</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E8%BF%99%E4%BA%9B%E5%B0%8F%E5%9F%8E%E4%B8%BA%E4%BD%95%E6%88%90%E4%BA%86%E6%98%A5%E8%8A%82%E7%83%AD%E9%97%A8%E6%97%85%E6%B8%B8%E5%9C%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7617155</span></div><div class="card-title">这些小城为何成了春节热门旅游地</div><div class="card-zh" style="display:none"></div><p class="desc">这个春节，很多人不再执着于热门景区的“人挤人”，转而奔赴文化独特、客流适中、性价比突出的特色小城，国内旅游市场呈现“小众崛起、特色领跑”的新气象。一批民俗与非遗</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BA%94%E7%B2%AE%E6%B6%B2%E9%9B%86%E5%9B%A2%E8%91%A3%E4%BA%8B%E9%95%BF%E6%9B%BE%E4%BB%8E%E9%92%A6%E8%A2%AB%E6%9F%A5&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7520375</span></div><div class="card-title">五粮液集团董事长曾从钦被查</div><div class="card-zh" style="display:none"></div><p class="desc">四川省宜宾五粮液集团有限公司党委书记、董事长，宜宾五粮液股份有限公司党委书记、董事长曾从钦涉嫌严重违纪违法，目前正接受宜宾市纪委监委纪律审查和监察调查。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E4%B8%80%E5%AD%A6%E6%A0%A1%E9%81%AD%E5%AF%BC%E5%BC%B9%E8%A2%AD%E5%87%BB+%E5%B7%B2%E8%87%B451%E6%AD%BB60%E4%BC%A4&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7425059</span></div><div class="card-title">伊朗一学校遭导弹袭击 已致51死60伤</div><div class="card-zh" style="display:none"></div><p class="desc">28日，伊朗霍尔木兹甘省一所女子小学遭到以色列导弹袭击。截至当天14时45分，该袭击中遇难人数已上升到51人，还有60名学生受伤。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%9B%BD%E9%98%B2%E9%83%A8%EF%BC%9A%E7%BE%8E%E6%98%AF%E5%85%A8%E7%90%83%E6%88%98%E7%95%A5%E7%A8%B3%E5%AE%9A%E6%9C%80%E5%A4%A7%E4%B9%B1%E6%BA%90&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7333355</span></div><div class="card-title">国防部：美是全球战略稳定最大乱源</div><div class="card-zh" style="display:none"></div><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%A5%B3%E5%AD%90%E7%A6%BB%E5%AE%B617%E5%A4%A9%E6%99%BA%E8%83%BD%E9%A9%AC%E6%A1%B6%E7%8B%82%E5%86%B2200%E5%90%A8%E6%B0%B4&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7233168</span></div><div class="card-title">女子离家17天智能马桶狂冲200吨水</div><div class="card-zh" style="display:none"></div><p class="desc">近日，河南洛阳张女士离家17天返程后，被告知家中用水异常。经查是智能马桶断电后故障不停冲水，17天约冲掉200吨水，按4.2元/吨计算，产生840元水费，让她十</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=45~54%E5%B2%81%E6%98%AF%E5%BB%B6%E7%BC%93%E5%A4%A7%E8%84%91%E8%A1%B0%E8%80%81%E2%80%9C%E6%9C%AB%E7%8F%AD%E8%BD%A6%E2%80%9D&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7137746</span></div><div class="card-title">45~54岁是延缓大脑衰老“末班车”</div><div class="card-zh" style="display:none"></div><p class="desc">总觉得这是“老了”的正常现象？其实大错特错！大脑的衰老，比你想象中来得更早。近日，最新研究发现，45~54岁，是延缓大脑衰老的“末班车”。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=B5999%E4%BB%8E%E5%8C%97%E4%BA%AC%E8%B5%B7%E9%A3%9E%E5%90%8E%E7%9B%98%E6%97%8B5%E5%B0%8F%E6%97%B6%E8%BF%94%E8%88%AA&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 7043159</span></div><div class="card-title">B5999从北京起飞后盘旋5小时返航</div><div class="card-zh" style="display:none"></div><p class="desc">2月27日，编号B5999的航空医疗救援机从北京首都机场起飞赴布达佩斯，起飞后突发状况返航，在北京市郊上空盘旋5小时耗油减重，随后安全降落，航班取消。该机为中国</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BF%84%E6%96%B9%E5%B0%B1%E7%BE%8E%E4%BB%A5%E8%A2%AD%E5%87%BB%E4%BC%8A%E6%9C%97%E8%A1%A8%E6%80%81&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6949804</span></div><div class="card-title">俄方就美以袭击伊朗表态</div><div class="card-zh" style="display:none"></div><p class="desc">当地时间28日，俄罗斯外交部表示，美国和以色列对伊朗境内目标发动空袭是一起事先策划的、武装侵略一个主权独立的联合国会员国的行为，公然违反国际法基本原则和规范。俄</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%A4%9A%E5%9C%B0%E8%BE%9F%E8%B0%A3%E6%96%B0%E8%83%BD%E6%BA%90%E6%B1%BD%E8%BD%A6%E5%BC%80%E5%BE%81%E9%87%8C%E7%A8%8B%E7%A8%8E&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6852451</span></div><div class="card-title">多地辟谣新能源汽车开征里程税</div><div class="card-zh" style="display:none"></div><p class="desc">近日，网传2026年多省试点征收新能源汽车里程税。经核实，多地税务部门及国税总局均回应称未收到相关通知，此为谣言。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E6%89%93%E5%87%BB%E7%BE%8E%E5%9B%BD%E5%86%9B%E4%BA%8B%E5%9F%BA%E5%9C%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6757711</span></div><div class="card-title">伊朗打击美国军事基地</div><div class="card-zh" style="display:none"></div><p class="desc">据伊朗电视台报道说，伊朗正在打击美国在中东的军事基地。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E9%99%86%E5%86%9B%E7%A7%B0%E5%85%B6%E6%80%BB%E5%8F%B8%E4%BB%A4%E6%97%A0%E6%81%99&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6657569</span></div><div class="card-title">伊朗陆军称其总司令无恙</div><div class="card-zh" style="display:none"></div><p class="desc">当地时间28日，伊朗军队公共关系部宣布，军队总司令哈塔米身体完全健康，正在指挥部队。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%BC%8A%E6%9C%97%E8%AE%AE%E4%BC%9A%E9%AB%98%E5%AE%98%EF%BC%9A%E7%BB%93%E5%B1%80%E5%B7%B2%E4%B8%8D%E5%86%8D%E7%94%B1%E4%BB%A5%E6%8E%8C%E6%8E%A7&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6559345</span></div><div class="card-title">伊朗议会高官：结局已不再由以掌控</div><div class="card-zh" style="display:none"></div><p class="desc">2月28日，伊朗议会国家安全和外交政策委员会主席易卜拉欣·阿齐兹说：“我们（伊朗）警告过你们（以色列），现在你们开启这条道路，结局已不再由你们掌控。”</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%A4%9A%E8%B7%AF%E8%BD%B0%E7%82%B8%E4%BC%8A%E6%9C%97+%E7%BE%8E%E4%BB%A5%E4%B8%8D%E8%A3%85%E4%BA%86&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6478417</span></div><div class="card-title">多路轰炸伊朗 美以不装了</div><div class="card-zh" style="display:none"></div><p class="desc">2月28日，美以对伊朗发动大规模军事打击。专家指出，此前的美伊谈判或为“障眼法”，美以真正目标是推动伊朗政权更迭。特朗普呼吁伊朗民众“接管政府”，内塔尼亚胡证实</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%93%88%E6%A2%85%E5%86%85%E4%BC%8A%E5%B7%B2%E5%A7%94%E4%BB%BB%E6%8E%A5%E7%8F%AD%E8%80%85%E4%BB%A5%E5%BA%94%E5%AF%B9%E6%96%A9%E9%A6%96&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6372364</span></div><div class="card-title">哈梅内伊已委任接班者以应对斩首</div><div class="card-zh" style="display:none"></div><p class="desc">近期，伊朗高级官员、革命卫队成员及前外交官透露，为防范被暗杀，哈梅内伊今年1月已任命前革命卫队指挥官拉里贾尼担任要职，以便在自己遭遇不测后领导国家。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E2%80%9C%E5%A6%82%E6%9E%9C%E6%B4%BB100%E5%B2%81%E8%BF%98%E8%83%BD%E8%A7%81%E4%BD%A010%E5%9B%9E%E2%80%9D&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6285883</span></div><div class="card-title">“如果活100岁还能见你10回”</div><div class="card-zh" style="display:none"></div><p class="desc">2月26日，山西一位90岁奶奶对即将离家的孙子说：“如果我能活100岁，还能见你10回”，90岁奶奶紧紧拽着孙子的行李箱，一句话直接让人破防。网友：见一面少一面</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E5%9B%BD%E9%98%B2%E9%83%A8%EF%BC%9A%E5%A5%89%E5%8A%9D%E6%97%A5%E6%96%B9%E4%B8%8D%E8%A6%81%E5%BC%80%E5%8E%86%E5%8F%B2%E5%80%92%E8%BD%A6&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6178366</span></div><div class="card-title">国防部：奉劝日方不要开历史倒车</div><div class="card-zh" style="display:none"></div><p class="desc">中国国防部新闻发言人张晓刚28日就近期涉军问题发布消息。他表示，中方奉劝日方不要一意孤行、开历史倒车，否则只会败得更快、输得更惨。</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=2025%E5%B9%B4181%E5%90%8D%E4%B8%AD%E7%AE%A1%E5%B9%B2%E9%83%A8%E8%A2%AB%E6%9F%A5&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 6094202</span></div><div class="card-title">2025年181名中管干部被查</div><div class="card-zh" style="display:none"></div><p class="desc">二十届中央纪委五次全会工作报告28日全文公布。报告显示，2025年，中央纪委国家监委立案审查调查金湘军、蓝天立、王莉霞、毕井泉、齐扎拉、蒋超良、刘慧、易会满等中</p><div class="card-time">21:34</div></a><a class="card" href="https://www.baidu.com/s?wd=%E4%B8%AD%E4%B8%9C%E5%A4%9A%E5%9C%B0%E5%93%8D%E8%B5%B7%E7%88%86%E7%82%B8%E5%A3%B0&amp;sa=fyb_news&amp;rsv_dl=fyb_news" target="_blank" rel="noopener"><div class="card-top"><span class="tag tag-default">百度热搜</span><span class="score">&#9650; 5989660</span></div><div class="card-title">中东多地响起爆炸声</div><div class="card-zh" style="display:none"></div><p class="desc">据中东媒体2月28日报道，美国和以色列对伊朗展开联合军事打击后，中东地区除以色列外，巴林、阿联酋、卡塔尔、沙特阿拉伯、科威特等也响起爆炸声。</p><div class="card-time">21:34</div></a></div>
+    </div>
+  </div>
 </div>
 <div id="market" class="panel">
   <div class="market-ts" id="market-ts">
@@ -329,6 +378,12 @@ footer{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-to
     <div class="section-title">&#129351; 贵金属</div>
     <div class="market-grid" id="mg-metal">
       <div class="skel"></div><div class="skel"></div>
+    </div>
+  </div>
+  <div class="market-section">
+    <div class="section-title">&#9878; 有色金属龙头</div>
+    <div class="market-grid" id="mg-nonferrous">
+      <div class="skel"></div><div class="skel"></div><div class="skel"></div>
     </div>
   </div>
   <p style="color:var(--mu);font-size:.73rem;margin-top:.5rem">数据来源：Finnhub &nbsp;·&nbsp; 延迟约15分钟 &nbsp;·&nbsp; 每5分钟自动刷新</p>
@@ -441,6 +496,13 @@ const MARKET = {
     {s:"OANDA:XAU_USD",n:"黄金",unit:"oz",cur:"USD"},
     {s:"OANDA:XAG_USD",n:"白银",unit:"oz",cur:"USD"},
   ],
+  nonferrous: [
+    {s:"FCX",n:"自由港铜业",cur:"USD"},
+    {s:"AA",n:"美国铝业",cur:"USD"},
+    {s:"NEM",n:"纽蒙特(金矿)",cur:"USD"},
+    {s:"VALE",n:"淡水河谷(铁矿)",cur:"USD"},
+    {s:"RIO",n:"力拓集团",cur:"USD"},
+  ],
 };
 
 // ── Tab 切换 ──
@@ -499,13 +561,14 @@ function mCard(name, sym, extra, q, cur) {
 
 async function loadMarket(force) {
   if (marketLoaded && !force) return;
-  const all = [...MARKET.us, ...MARKET.cn, ...MARKET.metal];
+  const all = [...MARKET.us, ...MARKET.cn, ...MARKET.metal, ...MARKET.nonferrous];
   const results = await Promise.allSettled(all.map(x => fetchQuote(x.s)));
   const map = {};
   all.forEach((x, i) => { map[x.s] = results[i].status === 'fulfilled' ? results[i].value : null; });
-  document.getElementById('mg-us').innerHTML    = MARKET.us.map(x    => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
-  document.getElementById('mg-cn').innerHTML    = MARKET.cn.map(x    => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
-  document.getElementById('mg-metal').innerHTML = MARKET.metal.map(x => mCard('🥇 '+x.n, x.s, ' / '+x.unit, map[x.s], x.cur)).join('');
+  document.getElementById('mg-us').innerHTML         = MARKET.us.map(x => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
+  document.getElementById('mg-cn').innerHTML         = MARKET.cn.map(x => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
+  document.getElementById('mg-metal').innerHTML      = MARKET.metal.map(x => mCard('🥇 '+x.n, x.s, ' / '+(x.unit||''), map[x.s], x.cur)).join('');
+  document.getElementById('mg-nonferrous').innerHTML = MARKET.nonferrous.map(x => mCard(x.n, x.s, '', map[x.s], x.cur)).join('');
   const now = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
   document.getElementById('market-ts').innerHTML = `<span>行情更新于 ${now}（延迟约15分钟）</span><a href="#" onclick="loadMarket(true);return false">↻ 刷新</a>`;
   marketLoaded = true;
@@ -525,15 +588,61 @@ async function loadOverviewMarket() {
   ovMarketLoaded = true;
 }
 
-// ── 归档 ──
+async function loadOvAIPreview() {
+  const el = document.getElementById('ov-ai-preview');
+  if (!el) return;
+  try {
+    const r = await fetch('data/ai_news.json?t=' + Date.now());
+    if (!r.ok) throw new Error('no data');
+    const d = await r.json();
+    const items = (d.items || []).slice(0, 4);
+    if (!items.length) { el.textContent = '暂无数据'; return; }
+    el.innerHTML = items.map(x => {
+      const t = (x.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return `<a href="${x.url}" target="_blank" rel="noopener" style="display:block;padding:.2rem 0;border-bottom:1px solid var(--bd2);color:var(--tx);font-size:.78rem;line-height:1.4;transition:color .15s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--tx)'">`
+        + `<span style="color:var(--mu);font-size:.68rem">${x.source||''} · ${x.date||''}</span><br>${t}</a>`;
+    }).join('') + `<div style="margin-top:.4rem;font-size:.72rem;color:var(--mu)">${d.total||0} 篇 · 近2月</div>`;
+  } catch(e) {
+    el.textContent = '暂无数据';
+  }
+}
+
+// ── 归档热力图 ──
 function renderArchive() {
   const el = document.getElementById('archive-list');
   if (!HISTORY.length) { el.innerHTML = '<div class="empty">暂无历史记录</div>'; return; }
-  el.innerHTML = HISTORY.map(h =>
-    `<div class="arc-item" onclick="loadHistory('${h.file}','${h.date}')">
-      <span class="arc-date">📅 ${h.date}</span>
-      <span class="arc-count">${h.total} 条 ›</span>
-    </div>`).join('');
+
+  // 按年月分组
+  const byMonth = {};
+  HISTORY.forEach(h => {
+    const [y, m] = h.date.split('-');
+    const key = y + '-' + m;
+    if (!byMonth[key]) byMonth[key] = { year: y, month: m, days: {} };
+    byMonth[key].days[h.date] = h;
+  });
+
+  const months = Object.keys(byMonth).sort((a,b) => b.localeCompare(a));
+  let html = '';
+  for (const mk of months) {
+    const { year, month, days } = byMonth[mk];
+    const monthNames = ['','一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+    const mLabel = monthNames[parseInt(month)] || month + '月';
+    html += `<div class="arc-month">
+      <div class="arc-month-label"><span class="arc-year">${year}</span><span class="arc-month-name">${mLabel}</span></div>
+      <div class="arc-heatmap">`;
+    // 生成该月所有天
+    const daysInMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = year + '-' + month + '-' + String(d).padStart(2,'0');
+      const entry = days[dateStr];
+      const cls = entry ? 'arc-day has-data' : 'arc-day';
+      const title = entry ? `${dateStr} · ${entry.total}条` : dateStr;
+      const onclick = entry ? `onclick="loadHistory('${entry.file}','${entry.date}')"` : '';
+      html += `<div class="${cls}" title="${title}" ${onclick}><span class="arc-day-num">${d}</span></div>`;
+    }
+    html += '</div></div>';
+  }
+  el.innerHTML = html;
 }
 
 function loadHistory(file, date) {
@@ -579,6 +688,7 @@ document.getElementById('modal').addEventListener('click', e => { if (e.target =
 
 // 首页默认加载速览行情，记录自动更新时间
 loadOverviewMarket().then(() => setLastUpdated('auto')).catch(() => setLastUpdated('auto'));
+loadOvAIPreview();
 
 // ── 天气 ──
 const WEATHER_CITIES = [
@@ -591,34 +701,64 @@ const WEATHER_ICONS = {
   71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',
   95:'⛈️',96:'⛈️',99:'⛈️',
 };
+const WEATHER_DESC = {
+  0:'晴',1:'晴间多云',2:'多云',3:'阴',45:'雾',48:'雾凇',
+  51:'小毛毛雨',53:'毛毛雨',55:'大毛毛雨',61:'小雨',63:'中雨',65:'大雨',
+  71:'小雪',73:'中雪',75:'大雪',80:'阵雨',81:'中阵雨',82:'强阵雨',
+  95:'雷阵雨',96:'雷阵雨夹冰雹',99:'强雷阵雨',
+};
 function wIcon(code){ return WEATHER_ICONS[code] || '🌡️'; }
+function wDesc(code){ return WEATHER_DESC[code] || ''; }
 
 async function loadWeather() {
   const bar = document.getElementById('weather-bar');
   try {
     const results = await Promise.all(WEATHER_CITIES.map(async city => {
+      // past_days=1 获取昨天，forecast_days=3 获取今明后
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}`
-        + `&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai&forecast_days=2`;
+        + `&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai&past_days=1&forecast_days=3`;
       const r = await fetch(url);
       if (!r.ok) throw new Error('weather fetch failed');
       const d = await r.json();
       return { city: city.name, daily: d.daily };
     }));
     bar.innerHTML = results.map(({ city, daily }) => {
-      const days = [0,1].map(i => {
-        const label = i === 0 ? '今天' : '明天';
-        const icon  = wIcon(daily.weathercode[i]);
-        const hi    = Math.round(daily.temperature_2m_max[i]);
-        const lo    = Math.round(daily.temperature_2m_min[i]);
+      // daily 数组: [昨天, 今天, 明天, 后天]
+      const labels = ['昨天','今天','明天'];
+      const days = [0,1,2].map(i => {
+        const code = daily.weathercode[i];
+        const icon = wIcon(code);
+        const desc = wDesc(code);
+        const hi   = Math.round(daily.temperature_2m_max[i]);
+        const lo   = Math.round(daily.temperature_2m_min[i]);
         return `<div class="weather-day">
-          <span class="weather-day-label">${label}</span>
+          <span class="weather-day-label">${labels[i]}</span>
           <span class="weather-icon">${icon}</span>
+          <span class="weather-desc">${desc}</span>
           <span class="weather-temp">${lo}°~${hi}°</span>
         </div>`;
       }).join('');
+      // 折线图：3天最高温趋势（SVG mini）
+      const highs = [0,1,2].map(i => Math.round(daily.temperature_2m_max[i]));
+      const lows  = [0,1,2].map(i => Math.round(daily.temperature_2m_min[i]));
+      const allTemps = [...highs, ...lows];
+      const tMin = Math.min(...allTemps) - 2, tMax = Math.max(...allTemps) + 2;
+      const tRange = tMax - tMin || 1;
+      const W = 72, H = 28;
+      function tx(i) { return Math.round(i * W / 2); }
+      function ty(t) { return Math.round(H - (t - tMin) / tRange * H); }
+      const hiPts = highs.map((t,i) => `${tx(i)},${ty(t)}`).join(' ');
+      const loPts = lows.map((t,i)  => `${tx(i)},${ty(t)}`).join(' ');
+      const sparkline = `<svg width="${W}" height="${H}" style="overflow:visible;margin-top:.3rem">
+        <polyline points="${hiPts}" fill="none" stroke="#f85149" stroke-width="1.5" stroke-linejoin="round"/>
+        <polyline points="${loPts}" fill="none" stroke="#58a6ff" stroke-width="1.5" stroke-linejoin="round"/>
+        ${highs.map((t,i) => `<circle cx="${tx(i)}" cy="${ty(t)}" r="2" fill="#f85149"/>`).join('')}
+        ${lows.map((t,i)  => `<circle cx="${tx(i)}" cy="${ty(t)}" r="2" fill="#58a6ff"/>`).join('')}
+      </svg>`;
       return `<div class="weather-city">
         <span class="weather-city-name">📍 ${city}</span>
         <div class="weather-days">${days}</div>
+        ${sparkline}
       </div>`;
     }).join('');
   } catch(e) {
