@@ -775,20 +775,57 @@ function switchTabByName(id) {{
 let marketLoaded = false;
 let ovMarketLoaded = false;
 
-async function fetchQuote(symbol) {{
-  try {{
-    const ctrl = new AbortController();
-    const tid  = setTimeout(() => ctrl.abort(), 8000);
-    const url  = 'https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(symbol) + '&token=' + FINNHUB_KEY;
-    const r    = await fetch(url, {{signal: ctrl.signal}});
-    clearTimeout(tid);
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const d = await r.json();
-    if (!d.c || d.c === 0) throw new Error('no data');
-    return {{ price: d.c, chg: d.d, pct: d.dp, currency: '' }};
-  }} catch(e) {{
-    throw e;
+// Finnhub symbol → Yahoo Finance symbol（实时报价 fallback）
+const YAHOO_SYM_MAP = {{
+  'HK:700':        '0700.HK',
+  'OANDA:XAU_USD': 'GC=F',
+  'OANDA:XAG_USD': 'SI=F',
+}};
+
+async function fetchYahooQuote(yahooSym) {{
+  const proxies = [
+    `https://corsproxy.io/?url=${{encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/' + yahooSym + '?interval=1d&range=5d')}}`,
+    `https://api.allorigins.win/raw?url=${{encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/' + yahooSym + '?interval=1d&range=5d')}}`,
+  ];
+  for (const url of proxies) {{
+    try {{
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 8000);
+      const r = await fetch(url, {{signal: ctrl.signal}});
+      clearTimeout(tid);
+      if (!r.ok) continue;
+      const d = await r.json();
+      const meta = d?.chart?.result?.[0]?.meta;
+      if (!meta || !meta.regularMarketPrice) continue;
+      const price = meta.regularMarketPrice;
+      const prev  = meta.chartPreviousClose || meta.previousClose || price;
+      const chg   = price - prev;
+      const pct   = prev ? (chg / prev * 100) : 0;
+      return {{ price, chg, pct, currency: meta.currency || '' }};
+    }} catch(e) {{ continue; }}
   }}
+  throw new Error('yahoo fallback failed');
+}}
+
+async function fetchQuote(symbol) {{
+  // 优先 Finnhub（美股）
+  const yahooFallback = YAHOO_SYM_MAP[symbol];
+  if (!yahooFallback) {{
+    // 纯 Finnhub 路径
+    try {{
+      const ctrl = new AbortController();
+      const tid  = setTimeout(() => ctrl.abort(), 8000);
+      const url  = 'https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(symbol) + '&token=' + FINNHUB_KEY;
+      const r    = await fetch(url, {{signal: ctrl.signal}});
+      clearTimeout(tid);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const d = await r.json();
+      if (!d.c || d.c === 0) throw new Error('no data');
+      return {{ price: d.c, chg: d.d, pct: d.dp, currency: '' }};
+    }} catch(e) {{ throw e; }}
+  }}
+  // Yahoo Finance 路径（港股/贵金属）
+  return fetchYahooQuote(yahooFallback);
 }}
 
 function mCard(name, sym, extra, q, cur) {{
