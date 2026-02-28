@@ -217,28 +217,26 @@ def main():
         "date": TODAY,
         "generated_at": datetime.now(CST).strftime("%Y-%m-%d %H:%M:%S CST"),
         "total": len(unique),
-        "categories": categories
+        "categories": categories,
     }
     out_path = os.path.join(OUTPUT_DIR, "news.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print(f"[INFO] 保存 {len(unique)} 条 → {out_path}")
+    print(f"[INFO] 保存 {len(unique)} 条新闻 → {out_path}")
 
-    # 同时维护历史索引
+    # 维护历史索引
+    import shutil
     history_index_path = os.path.join(OUTPUT_DIR, "history.json")
     history = []
     if os.path.exists(history_index_path):
         with open(history_index_path, encoding="utf-8") as f:
             history = json.load(f)
-    # 避免重复
     if not any(h["date"] == TODAY for h in history):
         history.insert(0, {"date": TODAY, "total": len(unique), "file": f"news_{TODAY}.json"})
-        history = history[:30]  # 保留最近30天
+        history = history[:30]
         with open(history_index_path, "w", encoding="utf-8") as f:
             json.dump(history, f, ensure_ascii=False, indent=2)
-    # 保存当日归档
     archive_path = os.path.join(OUTPUT_DIR, f"news_{TODAY}.json")
-    import shutil
     shutil.copy(out_path, archive_path)
     print(f"[INFO] 归档 → {archive_path}")
 
