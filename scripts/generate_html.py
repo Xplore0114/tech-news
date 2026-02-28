@@ -605,11 +605,11 @@ def _panel_focus():
 <div id="focus" class="panel">
   <div class="focus-toolbar">
     <div class="focus-topics" id="focus-topics">
-      <span class="focus-topic active" data-q="伊朗 以色列 中东局势" onclick="switchFocusTopic(this)">&#127758; 中东局势</span>
-      <span class="focus-topic" data-q="俄乌战争 乌克兰" onclick="switchFocusTopic(this)">&#128481; 俄乌战争</span>
-      <span class="focus-topic" data-q="中美贸易 关税" onclick="switchFocusTopic(this)">&#127981; 中美贸易</span>
-      <span class="focus-topic" data-q="人工智能 AI大模型" onclick="switchFocusTopic(this)">&#129302; AI前沿</span>
-      <span class="focus-topic" data-q="台海 两岸" onclick="switchFocusTopic(this)">&#127988; 台海动态</span>
+      <span class="focus-topic active" data-q="伊朗 以色列 中东 美军 革命卫队 导弹" onclick="switchFocusTopic(this)">&#127758; 中东局势</span>
+      <span class="focus-topic" data-q="俄乌 乌克兰 俄罗斯 泽连斯基 普京" onclick="switchFocusTopic(this)">&#128481; 俄乌战争</span>
+      <span class="focus-topic" data-q="中美 贸易 关税 特朗普 拜登 制裁" onclick="switchFocusTopic(this)">&#127981; 中美贸易</span>
+      <span class="focus-topic" data-q="人工智能 AI 大模型 GPT DeepSeek 机器学习" onclick="switchFocusTopic(this)">&#129302; AI前沿</span>
+      <span class="focus-topic" data-q="台海 台湾 两岸 解放军" onclick="switchFocusTopic(this)">&#127988; 台海动态</span>
     </div>
     <span class="focus-ts" id="focus-ts"></span>
   </div>
@@ -948,7 +948,7 @@ async function loadFocusTopic(query, label) {{
     el.innerHTML = `
       <div class="focus-summary">
         <div class="focus-summary-title">&#128269; 今日相关动态 · 共 ${{matched.length}} 条</div>
-        <div class="focus-summary-note">数据来源：百度热搜 · 国际/国内新闻</div>
+        <div class="focus-summary-note">数据来源：微博热搜 · 国际/国内新闻</div>
       </div>
       <div class="focus-cards">
         ${{matched.map(item => {{
