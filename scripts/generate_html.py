@@ -469,6 +469,7 @@ def _nav():
         &#128337; <span id="upd-time">--</span>
         <span class="upd-type" id="upd-type">自动</span>
       </span>
+      <a href="https://zhaorunrunrun.github.io/3dgs-tracker/" target="_blank" style="display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .7rem;background:rgba(104,211,145,.1);border:1px solid rgba(104,211,145,.3);border-radius:6px;color:#3fb950;font-size:.78rem;font-weight:600;text-decoration:none;white-space:nowrap">🔬 3DGS</a>
       <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="切换白天/暗黑模式"> 切换</button>
       <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()">
         <span class="refresh-icon">&#8635;</span> 刷新资讯
