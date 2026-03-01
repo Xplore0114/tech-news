@@ -281,8 +281,8 @@ a{{color:inherit;text-decoration:none}}
 footer{{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-top:1px solid var(--bd);margin-top:2rem}}
 
 /* ── 天气组件 ── */
-.weather-bar{{display:flex;gap:.5rem;align-items:stretch;flex-wrap:wrap}}
-.weather-city{{display:flex;flex-direction:column;gap:.3rem;background:linear-gradient(135deg,rgba(88,166,255,.1),rgba(88,166,255,.04));border:1px solid rgba(88,166,255,.22);border-radius:10px;padding:.55rem .85rem;min-width:148px;transition:border-color .2s}}
+.weather-bar{{display:flex;gap:.8rem;overflow-x:auto;padding-bottom:.4rem;align-items:stretch}}
+.weather-city{{display:flex;flex-direction:row;gap:0;background:linear-gradient(135deg,rgba(88,166,255,.1),rgba(88,166,255,.04));border:1px solid rgba(88,166,255,.22);border-radius:10px;padding:.6rem .8rem;width:28rem;min-width:28rem;flex-shrink:0;transition:border-color .2s}}
 .weather-city:hover{{border-color:rgba(88,166,255,.45)}}
 .weather-city-name{{font-size:.68rem;color:var(--ac);font-weight:700;letter-spacing:.05em;display:flex;align-items:center;gap:.25rem}}
 .weather-days{{display:flex;gap:.6rem}}
@@ -294,6 +294,10 @@ footer{{text-align:center;padding:2rem;color:var(--mu);font-size:.75rem;border-t
 .weather-temp{{font-size:.72rem;color:var(--tx);font-weight:700;white-space:nowrap;letter-spacing:.02em}}
 .weather-temp .hi{{color:#f85149}}.weather-temp .lo{{color:#58a6ff}}
 .weather-sparkline{{margin-top:.2rem;opacity:.85}}
+.wc-col{{display:flex;flex-direction:column;justify-content:center}}
+.wc-loc{{width:4rem;flex-shrink:0;border-right:1px solid rgba(88,166,255,.15);padding-right:.6rem;margin-right:.6rem}}
+.wc-days{{flex:1;display:flex;gap:.3rem;align-items:center}}
+.wc-chart{{width:90px;flex-shrink:0;border-left:1px solid rgba(88,166,255,.15);padding-left:.6rem;margin-left:.6rem;display:flex;align-items:center}}
 .weather-loading{{font-size:.72rem;color:var(--mu)}}
 
 /* ── 手动刷新按钮 ── */
@@ -1364,9 +1368,12 @@ async function loadWeather() {{
         ${{lows.map((t,i)  => `<circle cx="${{tx(i)}}" cy="${{ty(t)}}" r="2.5" fill="#58a6ff" stroke="var(--sf)" stroke-width="1"/>`).join('')}}
       </svg>`;
       return `<div class="weather-city">
-        <span class="weather-city-name">🌍 ${{city}}</span>
-        <div class="weather-days">${{days}}</div>
-        ${{sparkline}}
+        <div class="wc-col wc-loc">
+          <span class="weather-city-name">🌍 ${{city}}</span>
+          <div style="font-size:.62rem;color:var(--mu);margin-top:.3rem">昨·今·明</div>
+        </div>
+        <div class="wc-col wc-days">${{days}}</div>
+        <div class="wc-col wc-chart">${{sparkline}}</div>
       </div>`;
     }}).join('');
   }} catch(e) {{
