@@ -93,7 +93,7 @@ def main():
         f.write(_panel_archive())
         f.write(_modal())
         f.write(_footer(gen))
-        f.write(_script(history_json, date, total))
+        f.write(_script(history_json, date, total, gen))
     print(f"[INFO] HTML generated -> {OUTPUT_FILE}")
 
 
@@ -522,7 +522,11 @@ def _overview(intl, dom, trend, date, total, gen=""):
             )
         return html or '<div class="empty">暂无数据</div>'
 
-    upd_badge = f'<span class="ov-upd-time">&#128337; {upd_time}</span>' if upd_time else ""
+    # 静态更新时间 badge（Actions 生成时间），热点区块会被 JS 动态覆盖
+    static_upd = f'<span class="ov-upd-time" id="ov-intl-upd">&#128337; {upd_time}</span>' if upd_time else \
+                 '<span class="ov-upd-time" id="ov-intl-upd"></span>'
+    static_dom_upd = f'<span class="ov-upd-time" id="ov-dom-upd">&#128337; {upd_time}</span>' if upd_time else \
+                     '<span class="ov-upd-time" id="ov-dom-upd"></span>'
 
     intl_count  = len(intl)
     dom_count   = len(dom)
@@ -534,19 +538,19 @@ def _overview(intl, dom, trend, date, total, gen=""):
     <div class="stat-card"><div class="stat-num">{total}</div><div class="stat-label">今日资讯总数</div></div>
     <div class="stat-card"><div class="stat-num">{intl_count}</div><div class="stat-label">国际新闻</div></div>
     <div class="stat-card"><div class="stat-num">{dom_count}</div><div class="stat-label">国内资讯</div></div>
-    <div class="stat-card"><div class="stat-num">{trend_count}</div><div class="stat-label">实时热点</div></div>
+    <div class="stat-card"><div class="stat-num" id="ov-trend-count">{trend_count}</div><div class="stat-label">实时热点</div></div>
   </div>
   <div class="overview-grid">
-    <div class="ov-block">
-      <div class="ov-block-title">&#128293; 热点 TOP10 {upd_badge}<span class="section-more" onclick="switchTabByName('trend')">查看全部 &rsaquo;</span></div>
-      <div class="ov-rank-list">{trend_rank(trend)}</div>
+    <div class="ov-block" id="ov-trend-block">
+      <div class="ov-block-title">&#128293; 热点 TOP10 <span class="ov-upd-time" id="ov-trend-upd">&#128337; 加载中...</span><span class="section-more" onclick="switchTabByName('trend')">查看全部 &rsaquo;</span></div>
+      <div class="ov-rank-list" id="ov-trend-list">{trend_rank(trend)}</div>
     </div>
     <div class="ov-block">
-      <div class="ov-block-title">&#127760; 国际 TOP10 {upd_badge}<span class="section-more" onclick="switchTabByName('intl')">查看全部 &rsaquo;</span></div>
+      <div class="ov-block-title">&#127760; 国际 TOP10 {static_upd}<span class="section-more" onclick="switchTabByName('intl')">查看全部 &rsaquo;</span></div>
       <div class="ov-list">{top10_list(intl)}</div>
     </div>
     <div class="ov-block">
-      <div class="ov-block-title">&#127464;&#127475; 国内 TOP10 {upd_badge}<span class="section-more" onclick="switchTabByName('dom')">查看全部 &rsaquo;</span></div>
+      <div class="ov-block-title">&#127464;&#127475; 国内 TOP10 {static_dom_upd}<span class="section-more" onclick="switchTabByName('dom')">查看全部 &rsaquo;</span></div>
       <div class="ov-list">{top10_list(dom)}</div>
     </div>
   </div>
@@ -615,8 +619,8 @@ def _panel_trend(cards_html, trend_items=None):
 <div id="trend" class="panel">
   <div class="trend-layout">
     <div class="trend-rank-box">
-      <div class="trend-rank-title">&#127942; 热搜 TOP10</div>
-      <div class="rank-list">{rank_html or '<div class="empty">暂无数据</div>'}</div>
+      <div class="trend-rank-title">&#127942; 热搜 TOP10 <span class="ov-upd-time" id="trend-panel-upd">&#128337; 加载中...</span></div>
+      <div class="rank-list" id="trend-rank-list">{rank_html or '<div class="empty">暂无数据</div>'}</div>
     </div>
     <div class="trend-cards-box">
       <div class="trend-cat-tabs" id="trend-cat-tabs">
@@ -806,11 +810,12 @@ def _footer(gen):
 </footer>"""
 
 
-def _script(history_json, date, total):
+def _script(history_json, date, total, gen=""):
     return f"""
 <script>
 // ── 初始化 ──
 document.getElementById('hd-date').textContent = '📅 {date}';
+document.getElementById('hd-date').dataset.gen = '{gen}';
 document.getElementById('hd-total').textContent = '📰 {total} 条资讯';
 
 // ── 主题切换 ──
@@ -1394,6 +1399,94 @@ async function manualRefresh() {{
 
 restoreLastUpdated();
 loadWeather();
+loadRssTrend();
+
+// ── RSS 热点实时更新 ──
+function fmtNow() {{
+  const d = new Date();
+  return d.toLocaleString('zh-CN', {{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}});
+}}
+
+function setTrendUpd(text, isLive) {{
+  const badge = isLive
+    ? `<span style="color:var(--gn);font-size:.6rem">● 实时</span> &#128337; ${{text}}`
+    : `<span style="color:var(--mu);font-size:.6rem">● 缓存</span> &#128337; ${{text}}`;
+  ['ov-trend-upd','trend-panel-upd'].forEach(id => {{
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = badge;
+  }});
+}}
+
+async function fetchRssItems(rssUrl) {{
+  const proxies = [
+    `https://api.allorigins.win/get?url=${{encodeURIComponent(rssUrl)}}`,
+    `https://corsproxy.io/?${{encodeURIComponent(rssUrl)}}`
+  ];
+  for (const proxy of proxies) {{
+    try {{
+      const r = await fetch(proxy, {{signal: AbortSignal.timeout(6000)}});
+      if (!r.ok) continue;
+      const json = await r.json();
+      const xml = json.contents || json;
+      if (typeof xml !== 'string') continue;
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
+      const items = [...doc.querySelectorAll('item')].slice(0, 20).map(el => ({{
+        title: el.querySelector('title')?.textContent?.trim() || '',
+        url:   el.querySelector('link')?.textContent?.trim() || '#',
+        source: '微博热搜',
+        score: 0,
+        label: ''
+      }}));
+      if (items.length > 0) return items;
+    }} catch(e) {{ continue; }}
+  }}
+  return null;
+}}
+
+function renderOvTrendRank(items) {{
+  return items.slice(0,10).map((item, i) => {{
+    const cls = i < 3 ? `r${{i+1}}` : '';
+    return `<a class="ov-rank-item" href="${{item.url}}" target="_blank" rel="noopener">`
+      + `<span class="ov-rank-num ${{cls}}">${{i+1}}</span>`
+      + `<span class="ov-rank-title">${{item.title}}</span></a>`;
+  }}).join('');
+}}
+
+function renderTrendRankPanel(items) {{
+  return items.slice(0,10).map((item, i) => {{
+    const cls = i < 3 ? `r${{i+1}}` : '';
+    return `<a class="rank-item" href="${{item.url}}" target="_blank" rel="noopener">`
+      + `<span class="rank-num ${{cls}}">${{i+1}}</span>`
+      + `<div class="rank-content"><div class="rank-title">${{item.title}}</div></div></a>`;
+  }}).join('');
+}}
+
+async function loadRssTrend() {{
+  // 先把静态数据的时间显示出来（缓存标记）
+  const staticGen = document.getElementById('hd-date')?.dataset?.gen || '';
+  const staticTime = staticGen ? staticGen.split(' ').slice(1,2).join('').slice(0,5) : '缓存';
+  setTrendUpd(staticTime, false);
+
+  const RSS_URL = 'https://rsshub.app/weibo/search/hot';
+  const items = await fetchRssItems(RSS_URL);
+  const now = fmtNow();
+
+  if (items && items.length > 0) {{
+    // 更新速览页热点列表
+    const ovList = document.getElementById('ov-trend-list');
+    if (ovList) ovList.innerHTML = renderOvTrendRank(items);
+    // 更新热点面板排行榜
+    const rankList = document.getElementById('trend-rank-list');
+    if (rankList) rankList.innerHTML = renderTrendRankPanel(items);
+    // 更新热点数量
+    const cntEl = document.getElementById('ov-trend-count');
+    if (cntEl) cntEl.textContent = items.length;
+    setTrendUpd(now, true);
+  }} else {{
+    // RSS 失败，显示缓存时间
+    setTrendUpd(staticTime + ' (缓存)', false);
+  }}
+}}
 
 // ── AI 资讯 ──
 let aiData = null;
