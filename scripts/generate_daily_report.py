@@ -34,9 +34,9 @@ def load_recent_news(days=5):
                         "title": item.get("title",""), "source": item.get("source","")})
         except Exception as e:
             print("[WARN] news.json: %s" % e)
-    hist_dir = os.path.join(DATA_DIR, "history")
+    hist_dir = DATA_DIR
     if os.path.exists(hist_dir):
-        files = sorted(glob.glob(os.path.join(hist_dir, "*.json")), reverse=True)
+        files = sorted(glob.glob(os.path.join(hist_dir, "news_*.json")), reverse=True)
         for f in files[:days-1]:
             try:
                 d = json.load(open(f, encoding="utf-8"))
