@@ -142,10 +142,10 @@ def get_feishu_token():
     return d["tenant_access_token"]
 
 def send_feishu_card(report_text, date_str, token):
-    """发送飞书富文本卡片消息"""
-    # 截取前800字作为预览
-    preview = report_text[:800].strip()
-    if len(report_text) > 800:
+    """发送飞书卡片消息。使用 plain_text 预览，避免 lark_md 对标题语法兼容问题。"""
+    preview = report_text.replace("# ", "").replace("## ", "").strip()
+    preview = preview[:900]
+    if len(report_text) > 900:
         preview += "……"
 
     card = {
@@ -157,7 +157,7 @@ def send_feishu_card(report_text, date_str, token):
         "elements": [
             {
                 "tag": "div",
-                "text": {"tag": "lark_md", "content": preview}
+                "text": {"tag": "plain_text", "content": preview}
             },
             {"tag": "hr"},
             {
