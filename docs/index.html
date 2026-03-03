@@ -640,6 +640,7 @@ function toggleTheme() {
 }
 
 const HISTORY = [{"date": "2026-03-03", "total": 82, "file": "news_2026-03-03.json"}, {"date": "2026-03-02", "total": 83, "file": "news_2026-03-02.json"}, {"date": "2026-03-01", "total": 84, "file": "news_2026-03-01.json"}, {"date": "2026-02-28", "total": 35, "file": "news_2026-02-28.json"}];
+const REPORT_HISTORY = [{"date": "2026-03-03", "file": "daily_report_2026-03-03.json"}];
 
 const FINNHUB_KEY = 'd6hdma9r01qnjnco9un0d6hdma9r01qnjnco9ung';
 const MARKET = {
@@ -1042,12 +1043,15 @@ function renderArchive() {
     for (let d = 1; d <= daysInMonth; d++) {
       const dateStr = year + '-' + month + '-' + String(d).padStart(2,'0');
       const entry = days[dateStr];
+      const rep = REPORT_HISTORY.find(x => x.date === dateStr);
       const isToday = dateStr === todayStr;
       let cls = 'arc-cell';
-      if (entry) cls += ' has-data';
+      if (entry || rep) cls += ' has-data';
       if (isToday) cls += ' today';
-      const title = entry ? `${dateStr} · ${entry.total}条` : dateStr;
-      const onclick = entry ? `onclick="loadHistory('${entry.file}','${entry.date}')"` : '';
+      const title = entry ? `${dateStr} · ${entry.total}条` : (rep ? `${dateStr} · 日报` : dateStr);
+      const onclick = rep
+        ? `onclick="loadReportHistory('${rep.file}','${rep.date}')"`
+        : (entry ? `onclick="loadHistory('${entry.file}','${entry.date}')"` : '');
       html += `<div class="${cls}" title="${title}" ${onclick}>${d}</div>`;
     }
     html += '</div></div>';
@@ -1060,6 +1064,32 @@ function loadHistory(file, date) {
     .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(d => showModal(date, d))
     .catch(e => alert('加载失败：' + e));
+}
+
+function loadReportHistory(file, date) {
+  fetch('data/' + file)
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(d => showReportModal(date, d))
+    .catch(e => alert('加载日报失败：' + e));
+}
+
+function showReportModal(date, data) {
+  document.getElementById('modal-title').textContent = date + ' AI日报';
+  const report = data.report || '';
+  if (!report) {
+    document.getElementById('modal-body').innerHTML = '<div class="empty">暂无内容</div>';
+  } else {
+    let html = report
+      .replace(/^## (.+)$/gm, '<h3 class="dr-h3">$1</h3>')
+      .replace(/^# (.+)$/gm, '<h2 class="dr-h2">$1</h2>')
+      .replace(/^---$/gm, '<hr class="dr-hr">')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n/g, '</p><p class="dr-p">')
+      .replace(/\n/g, '<br>');
+    document.getElementById('modal-body').innerHTML = `<div class="dr-content"><p class="dr-p">${html}</p></div>`;
+  }
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function showModal(date, data) {

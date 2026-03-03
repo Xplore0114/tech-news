@@ -58,6 +58,7 @@ def render_cards(items, limit=None, translate=False):
 def main():
     news    = load_json("news.json", {})
     history = load_json("history.json", [])
+    report_history = load_json("daily_report_history.json", [])
 
     date = news.get("date", "")
     gen  = news.get("generated_at", "")
@@ -78,6 +79,7 @@ def main():
 
     total = len(intl) + len(dom) + len(trend)
     history_json = json.dumps(history, ensure_ascii=False)
+    report_history_json = json.dumps(report_history, ensure_ascii=False)
 
     os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
@@ -93,7 +95,7 @@ def main():
         f.write(_panel_archive())
         f.write(_modal())
         f.write(_footer(gen))
-        f.write(_script(history_json, date, total, gen))
+        f.write(_script(history_json, report_history_json, date, total, gen))
     print(f"[INFO] HTML generated -> {OUTPUT_FILE}")
 
 
@@ -824,7 +826,7 @@ def _footer(gen):
 </footer>"""
 
 
-def _script(history_json, date, total, gen=""):
+def _script(history_json, report_history_json, date, total, gen=""):
     return f"""
 <script>
 // ── 初始化 ──
@@ -845,6 +847,7 @@ function toggleTheme() {{
 }}
 
 const HISTORY = {history_json};
+const REPORT_HISTORY = {report_history_json};
 
 const FINNHUB_KEY = 'd6hdma9r01qnjnco9un0d6hdma9r01qnjnco9ung';
 const MARKET = {{
@@ -1247,12 +1250,15 @@ function renderArchive() {{
     for (let d = 1; d <= daysInMonth; d++) {{
       const dateStr = year + '-' + month + '-' + String(d).padStart(2,'0');
       const entry = days[dateStr];
+      const rep = REPORT_HISTORY.find(x => x.date === dateStr);
       const isToday = dateStr === todayStr;
       let cls = 'arc-cell';
-      if (entry) cls += ' has-data';
+      if (entry || rep) cls += ' has-data';
       if (isToday) cls += ' today';
-      const title = entry ? `${{dateStr}} · ${{entry.total}}条` : dateStr;
-      const onclick = entry ? `onclick="loadHistory('${{entry.file}}','${{entry.date}}')"` : '';
+      const title = entry ? `${{dateStr}} · ${{entry.total}}条` : (rep ? `${{dateStr}} · 日报` : dateStr);
+      const onclick = rep
+        ? `onclick="loadReportHistory('${{rep.file}}','${{rep.date}}')"`
+        : (entry ? `onclick="loadHistory('${{entry.file}}','${{entry.date}}')"` : '');
       html += `<div class="${{cls}}" title="${{title}}" ${{onclick}}>${{d}}</div>`;
     }}
     html += '</div></div>';
@@ -1265,6 +1271,32 @@ function loadHistory(file, date) {{
     .then(r => {{ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }})
     .then(d => showModal(date, d))
     .catch(e => alert('加载失败：' + e));
+}}
+
+function loadReportHistory(file, date) {{
+  fetch('data/' + file)
+    .then(r => {{ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }})
+    .then(d => showReportModal(date, d))
+    .catch(e => alert('加载日报失败：' + e));
+}}
+
+function showReportModal(date, data) {{
+  document.getElementById('modal-title').textContent = date + ' AI日报';
+  const report = data.report || '';
+  if (!report) {{
+    document.getElementById('modal-body').innerHTML = '<div class="empty">暂无内容</div>';
+  }} else {{
+    let html = report
+      .replace(/^## (.+)$/gm, '<h3 class="dr-h3">$1</h3>')
+      .replace(/^# (.+)$/gm, '<h2 class="dr-h2">$1</h2>')
+      .replace(/^---$/gm, '<hr class="dr-hr">')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\\n\\n/g, '</p><p class="dr-p">')
+      .replace(/\\n/g, '<br>');
+    document.getElementById('modal-body').innerHTML = `<div class="dr-content"><p class="dr-p">${{html}}</p></div>`;
+  }}
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }}
 
 function showModal(date, data) {{
