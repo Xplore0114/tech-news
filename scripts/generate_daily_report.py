@@ -110,10 +110,21 @@ def call_claude(prompt):
     ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=130)
     if result.returncode != 0:
         raise RuntimeError("curl failed: %s" % result.stderr.decode())
-    resp = json.loads(result.stdout.decode("utf-8"))
+
+    raw = result.stdout.decode("utf-8", errors="ignore").strip()
+    try:
+        resp = json.loads(raw)
+    except Exception:
+        # 网关偶发直接返回纯文本错误（如“请求错误(状态码: 500)”）
+        raise RuntimeError("non-json response: %s" % raw[:200])
+
     if "error" in resp:
         raise RuntimeError("API error: %s" % resp["error"])
-    return resp["content"][0]["text"]
+
+    content = resp.get("content") or []
+    if not content or not isinstance(content, list):
+        raise RuntimeError("invalid response content")
+    return content[0].get("text", "")
 
 def get_feishu_token():
     payload = json.dumps({"app_id": FEISHU_APP_ID, "app_secret": FEISHU_APP_SECRET}).encode()
@@ -178,6 +189,35 @@ def send_feishu_card(report_text, date_str, token):
     print("[INFO] 飞书推送成功")
 
 
+def build_fallback_report(news_items, ai_items, now):
+    """当大模型不可用时，基于抓取结果生成可读日报，确保每天都有新文件。"""
+    def pick(cat, n=6):
+        return [x.get("title", "") for x in news_items if x.get("cat") == cat][:n]
+
+    intl = pick("international", 6)
+    dom = pick("domestic", 6)
+    hot = pick("trending", 8)
+    ai  = [x.get("title", "") for x in ai_items[:6]]
+
+    def lines(arr):
+        if not arr:
+            return "- 暂无"
+        return "\n".join("- " + t for t in arr if t)
+
+    return (
+        "【今日要闻摘要】\n"
+        "今日国际与国内消息密集，市场情绪与政策预期交织。以下为自动汇总要点：\n\n"
+        "【国际局势】\n" + lines(intl) + "\n\n"
+        "【国内热点】\n" + lines(dom) + "\n\n"
+        "【实时热点】\n" + lines(hot) + "\n\n"
+        "【科技与AI动态】\n" + lines(ai) + "\n\n"
+        "【编辑点评】\n"
+        "本报告由系统在大模型接口异常时自动降级生成，重点保证时效与可读性；"
+        "建议结合站内原文与外部权威媒体做进一步交叉验证。\n\n"
+        "生成时间：%s"
+    ) % now.strftime("%Y-%m-%d %H:%M CST")
+
+
 def main():
     now = datetime.now(CST)
     print("[INFO] 生成日报 @ %s" % now.strftime("%Y-%m-%d %H:%M CST"))
@@ -192,7 +232,9 @@ def main():
         report_text = call_claude(prompt)
         print("  日报生成成功，%d 字" % len(report_text))
     except Exception as e:
-        print("[ERROR] Claude API: %s" % e); return
+        print("[ERROR] Claude API: %s" % e)
+        report_text = build_fallback_report(news_items, ai_items, now)
+        print("[INFO] 已切换降级模板生成，%d 字" % len(report_text))
     date_str = now.strftime("%Y-%m-%d")
     out = {
         "generated_at": now.strftime("%Y-%m-%d %H:%M:%S CST"),
