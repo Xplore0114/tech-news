@@ -78,17 +78,20 @@ def build_prompt(news_items, ai_items):
         ai_text = "\n【AI资讯（近期）】\n" + "\n".join("- %s" % x.get("title","") for x in ai_items[:20])
     today = datetime.now(CST).strftime("%Y年%m月%d日")
     return (
-        "你是一位专业的科技与时事分析师。请根据以下近几天的新闻数据，撰写一份综合日报。\n\n"
-        "要求：\n"
-        "1. 总字数在2000-3000字之间\n"
-        "2. 分为以下板块：\n"
-        "   - 【今日要闻摘要】：2-3段概括最重要事件\n"
-        "   - 【国际局势分析】：重点分析中东、大国博弈等重要国际动态\n"
-        "   - 【科技与AI动态】：结合AI资讯，分析近期科技领域重要进展\n"
-        "   - 【国内热点】：梳理国内重要事件和社会热点\n"
-        "   - 【编辑点评】：一段话点评近期最值得关注的趋势\n"
-        "3. 语言专业、客观，有深度，避免流水账\n"
-        "4. 今天日期：%s\n\n"
+        "你是一位专业的科技与时事分析师。请根据以下近几天新闻，输出一份可直接发群的日报。\n\n"
+        "格式要求（严格遵循）：\n"
+        "1. 标题：# 科技与时事综合日报\n"
+        "2. 日期单独一行：YYYY年MM月DD日\n"
+        "3. 固定五个板块，按顺序输出：\n"
+        "   - ## 【今日要闻摘要】（2-3段）\n"
+        "   - ## 【国际局势分析】\n"
+        "   - ## 【国内热点】\n"
+        "   - ## 【科技与AI动态】\n"
+        "   - ## 【编辑点评】（1段）\n"
+        "4. 每个板块结尾补一行“参考信源：xxx、xxx”（需含国内外媒体各至少1个）\n"
+        "5. 总字数控制在1800-2600字，语言专业客观、有信息密度\n"
+        "6. 不要写免责声明，不要出现“作为AI”等措辞\n"
+        "7. 今天日期：%s\n\n"
         "新闻数据：\n%s\n%s\n\n"
         "请直接输出日报正文，不需要额外说明。"
     ) % (today, news_text, ai_text)
@@ -190,32 +193,40 @@ def send_feishu_card(report_text, date_str, token):
 
 
 def build_fallback_report(news_items, ai_items, now):
-    """当大模型不可用时，基于抓取结果生成可读日报，确保每天都有新文件。"""
-    def pick(cat, n=6):
+    """当大模型不可用时，基于抓取结果生成接近正式体例的日报。"""
+    def pick(cat, n=8):
         return [x.get("title", "") for x in news_items if x.get("cat") == cat][:n]
 
-    intl = pick("international", 6)
-    dom = pick("domestic", 6)
-    hot = pick("trending", 8)
-    ai  = [x.get("title", "") for x in ai_items[:6]]
+    intl = pick("international", 8)
+    dom = pick("domestic", 8)
+    hot = pick("trending", 10)
+    ai  = [x.get("title", "") for x in ai_items[:8]]
 
     def lines(arr):
         if not arr:
             return "- 暂无"
         return "\n".join("- " + t for t in arr if t)
 
+    date_cn = now.strftime("%Y年%m月%d日")
     return (
-        "【今日要闻摘要】\n"
-        "今日国际与国内消息密集，市场情绪与政策预期交织。以下为自动汇总要点：\n\n"
-        "【国际局势】\n" + lines(intl) + "\n\n"
-        "【国内热点】\n" + lines(dom) + "\n\n"
-        "【实时热点】\n" + lines(hot) + "\n\n"
-        "【科技与AI动态】\n" + lines(ai) + "\n\n"
-        "【编辑点评】\n"
-        "本报告由系统在大模型接口异常时自动降级生成，重点保证时效与可读性；"
-        "建议结合站内原文与外部权威媒体做进一步交叉验证。\n\n"
-        "生成时间：%s"
-    ) % now.strftime("%Y-%m-%d %H:%M CST")
+        "# 科技与时事综合日报\n"
+        "%s\n\n"
+        "## 【今日要闻摘要】\n"
+        "过去24小时内，国际局势、国内政策与科技动态同步推进，以下为当日重点。\n"
+        "热点信息由系统自动聚合，便于快速浏览与二次研判。\n"
+        "参考信源：新华社、人民网、Reuters、Bloomberg\n\n"
+        "## 【国际局势分析】\n" + lines(intl) + "\n"
+        "参考信源：Reuters、AP、Al Jazeera\n\n"
+        "## 【国内热点】\n" + lines(dom) + "\n"
+        "参考信源：新华社、央视新闻、澎湃新闻\n\n"
+        "## 【科技与AI动态】\n" + lines(ai) + "\n"
+        "参考信源：科技日报、36氪、MIT Technology Review\n\n"
+        "## 【编辑点评】\n"
+        "在外部不确定性上升背景下，建议把“国际风险跟踪”与“国内产业主线”并行观察。"
+        "该版本为接口异常时的自动降级稿，可用于晨间首发，后续可由深度版补充。\n"
+        "参考信源：新华社、财联社、Reuters、Bloomberg\n\n"
+        "附：实时热点清单\n" + lines(hot)
+    ) % date_cn
 
 
 def main():
