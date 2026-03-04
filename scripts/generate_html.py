@@ -714,9 +714,7 @@ def _panel_focus():
     </div>
     <span class="focus-ts" id="focus-ts"></span>
   </div>
-  <div id="focus-content">
-    <div class="empty">选择主题后加载相关新闻...</div>
-  </div>
+  <div id="focus-content"></div>
 </div>"""
 
 
