@@ -1,0 +1,46 @@
+name: 每日晚间金价简报
+
+on:
+  schedule:
+    - cron: '30 13 * * *' # 北京时间 21:30
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gold-brief
+  cancel-in-progress: false
+
+jobs:
+  send-gold-brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 生成并发送金价简报
+        env:
+          FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_BOT_WEBHOOK }}
+        run: python scripts/send_gold_brief.py
+
+      - name: 失败告警
+        if: failure() && secrets.FEISHU_BOT_WEBHOOK != ''
+        env:
+          FEISHU_BOT_WEBHOOK: ${{ secrets.FEISHU_BOT_WEBHOOK }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          webhook = os.getenv('FEISHU_BOT_WEBHOOK', '').strip()
+          if not webhook:
+              raise SystemExit(0)
+          text = f"⚠️ 每日金价推送失败\n仓库: {os.getenv('GITHUB_REPOSITORY')}\nRun: {os.getenv('RUN_URL')}"
+          payload = json.dumps({"msg_type": "text", "content": {"text": text}}, ensure_ascii=False).encode('utf-8')
+          req = urllib.request.Request(webhook, data=payload, headers={"Content-Type": "application/json; charset=utf-8"})
+          urllib.request.urlopen(req, timeout=15).read()
+          PY
