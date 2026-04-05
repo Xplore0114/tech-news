@@ -51,8 +51,8 @@ jobs:
 
       - name: 提交推送
         run: |
-          git config user.name "RizhiluBot"
-          git config user.email "bot@rizhilu"
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
           git add docs/
           git stash
           git pull --rebase origin main

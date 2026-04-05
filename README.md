@@ -1,10 +1,12 @@
-# 科技日报 Tech News
+# 日知录 - 每日科技新闻
 
-每日自动抓取科技圈新闻，通过 GitHub Actions 在北京时间每天 08:00 更新。
+> 日知其所亡，月无忘其所能。
+
+每日自动抓取科技圈新闻，通过 GitHub Actions 在北京时间每天 08:00 和 21:00 更新。
 
 ## 访问地址
 
-🌐 https://zhaorunrunrun.github.io/tech-news/
+🌐 https://[你的用户名].github.io/tech-news/
 
 ## 数据来源
 
